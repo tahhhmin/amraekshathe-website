@@ -8,7 +8,7 @@ export default function HeroSection() {
     <section className={Styles.section}>
       <div className={Styles.container}>
         <div className={Styles.heroTag}>
-          <p>An Initiative By Hashi Ekshathe Foundation</p>
+          <p>An Initiative By ...</p>
         </div>
 
         <div>

@@ -17,16 +17,16 @@
     z-index: 1000;
     backdrop-filter: blur(50px);
     box-sizing: border-box;
-    padding: 0.5rem;
+    padding: 0.5rem 1.15rem;
     border-radius: 12px;
     border: 1px solid var(--color-border);
 }
 .logoName {
     text-decoration: none;
 }
-.logo {
+.logo, .logoDark {
     height: auto;
-    width: 12rem;
+    width: 3rem;
 }
 .buttonContainer {
     display: flex;
@@ -41,4 +41,20 @@
     max-width: fit-content;
     min-width: 0; /* Important for flexbox overflow */
     margin: auto 0;
+}
+
+.logoLight {
+  display: block;
+}
+.logoDark {
+  display: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  .logoLight {
+    display: none;
+  }
+  .logoDark {
+    display: block;
+  }
 }

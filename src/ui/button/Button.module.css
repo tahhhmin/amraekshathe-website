@@ -31,7 +31,7 @@
 .primary {
     background-color: var(--color-primary);
     color: #0D0D0D;
-    border-color: var(--color-primary);
+    border-color: var(--color-border);
 }
 
 
@@ -70,13 +70,13 @@
     border-radius: 8px;
     justify-content: center;
     align-items: center;
-    border-color: var(--color-primary);
+    border-color: var(--color-border);
     display: inline-flex;
 }
 
 /* Force icon color inside icon button */
 .icon .buttonIcon {
-    color: var(--color-text);
+    color: var(--color-black);
 }
 
 .icon:hover {

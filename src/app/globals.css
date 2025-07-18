@@ -1,5 +1,6 @@
-:root {
+:root {  
     --color-primary: #FEB854;
+    --color-background: #F8F4EC;
 
     --color-white: #fcfffd;
     --color-off-white: #dadada;
@@ -10,7 +11,7 @@
     --color-light2-gray: #9da1a1;
 
     /* Default to light theme */
-    --color-background: var(--color-white);
+
     --color-text: var(--color-black);
     --color-card: var(--color-off-white);
     --color-border: var(--color-light2-gray);
