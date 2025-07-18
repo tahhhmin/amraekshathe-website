@@ -4,6 +4,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Button from '@/ui/button/Button'
 
 export default function AuthButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,15 +24,18 @@ export default function AuthButton() {
   }, []);
 
   const handleClick = () => {
-    router.push(isLoggedIn ? "/profile" : "/auth");
+    router.push(isLoggedIn ? "/profile" : "/login-signup");
   };
 
+
+
   return (
-    <button
-      onClick={handleClick}
-      className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-    >
-      {isLoggedIn ? "Profile" : "Login / Signup"}
-    </button>
+
+    <Button
+        onClick={handleClick}
+        variant="primary"
+        label= {isLoggedIn ? "Profile" : "Login / Signup"}
+        showIcon
+    />
   );
 }

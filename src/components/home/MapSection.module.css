@@ -1,0 +1,22 @@
+.section {
+  padding: 2rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.container {
+  width: 100%;
+  max-width: 1440px;
+  height: 500px;
+  margin: 0 auto;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border);
+}
+.heroText {
+    font-size: 3rem;
+    line-height: 1.15;
+}

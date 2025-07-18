@@ -1,0 +1,11 @@
+.horizontalDivider {
+    width: 100%;
+    height: 2px;
+    background-color: var(--color-border);
+}
+
+.verticalDivider {
+    width: 2px;
+    height: 100%;
+    background-color: var(--color-border);
+}

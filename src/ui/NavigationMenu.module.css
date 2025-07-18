@@ -1,0 +1,177 @@
+.nav {
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  overflow: visible;
+  z-index: 100;
+  gap: 1rem;
+}
+
+.navbarWrapper {
+    position: relative; /* for scroll buttons positioning */
+    flex: 1 1 auto; /* fill space between logo and buttons */
+    display: flex;
+    align-items: center;
+    overflow: visible;
+    min-width: 0; /* allow shrinking */
+}
+
+.navbarContainer {
+    display: flex;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    justify-content: flex-start;
+    gap: 4px;
+    flex: 1 1 auto;
+    min-width: 0; /* important for flex shrink */
+}
+
+.navbarContainer::-webkit-scrollbar {
+    display: none;
+}
+
+.navItemContainer {
+    flex-shrink: 0;
+    display: flex;
+    position: relative;
+}
+
+.navItem {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    margin: 0 2px;
+    white-space: nowrap;
+    font-family: inherit;
+    color: var(--color-text);
+}
+
+.navItem:hover {
+    background-color: rgba(249, 115, 22, 0.1);
+}
+
+.navText {
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text);
+  transition: color 0.2s ease;
+}
+
+
+.dropdownArrow {
+  margin-left: 4px;
+  color: var(--color-text);
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.navItem:hover .dropdownArrow {
+  color: var(--color-text);
+  transform: rotate(180deg);
+}
+
+.dropdownMenu {
+    margin-top: 7px;
+    position: fixed;
+    background: var(--color-card);
+    border: 1px solid var(--color-border);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+    min-width: 200px;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    overflow: hidden;
+    pointer-events: none;
+    max-width: 300px;
+}
+
+.dropdownMenu.active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.dropdownItem {
+    display: block;
+    width: 100%;
+    padding: 12px 18px;
+    background: var(--color-background);
+    border: none;
+    border-bottom: 1px solid var(--color-border); /* Add this line */
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-size: 16px;
+    font-weight: 400;
+    color: var(--color-text);
+    font-family: inherit;
+}
+.dropdownItem:last-child {
+    border-bottom: none;
+}
+.dropdownItemTitle {
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 2px;
+  color: var(--color-text);
+}
+
+.dropdownItemDescription {
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--color-muted);
+
+}
+
+.dropdownItem:hover {
+    background-color: var(--color-card);
+}
+
+.scrollButton {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 8px;
+    background: var(--color-orange);
+    border: 1px solid var(--color-orange);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--color-white);
+    z-index: 101;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.scrollButton:hover {
+    box-shadow: 0 0 0 4px rgba(240, 86, 45, 0.6);
+}
+.scrollLeft {
+  left: 0;
+}
+
+.scrollRight {
+  right: 0;
+}
+
+/* Active nav item styling */
+.activeNavItem .navText {
+  color: var(--color-orange);
+  font-weight: 600;
+}
+
+.navItem.activeNavItem:hover {
+  background-color: rgba(249, 115, 22, 0.1);
+}
+
+

@@ -1,11 +1,16 @@
-import Image from "next/image";
 import styles from "./page.module.css";
-import AuthButton from "@/components/AuthButton";
+import HeroSection from "@/components/home/HeroSection";
+import MapComponent from "@/components/home/MapSection";
+import OrganisationSlideshow from "@/components/home/OrganisationSlideshow";
+import HowItWorksSection from "@/components/home/HowItWorksSection";
 
 export default function Home() {
-  return (
-    <div className={styles.page}>
-        <AuthButton />
-    </div>
-  );
+    return (
+        <div className={styles.page}>
+            <HeroSection />
+            <OrganisationSlideshow />
+            <MapComponent />
+            <HowItWorksSection />
+        </div>
+    );
 }

@@ -1,0 +1,126 @@
+/* Base Button Style */
+.button {
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3rem;
+    height: fit-content;
+    border: 1px solid transparent;
+    transition: all 0.2s ease; /* fallback for var */
+    box-sizing: border-box;
+    white-space: pre-wrap;
+}
+
+.button:focus-visible {
+    outline: 2px solid var(--color-white);
+    outline-offset: 2px;
+}
+
+/* Shared icon styles */
+.buttonIcon {
+    color: #0D0D0D;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Variant: Primary */
+.primary {
+    background-color: var(--color-primary);
+    color: #0D0D0D;
+    border-color: var(--color-primary);
+}
+
+
+/* Variant: Secondary */
+.secondary {
+    background-color: var(--color-gray);
+    color: var(--color-white);
+    border-color: var(--color-gray);
+}
+
+.secondary:hover {
+    background-color: var(--color-white);
+    color: var(--color-black);
+    border-color: var(--color-white);
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336);
+}
+
+/* Variant: Outlined */
+.outlined {
+    background-color: transparent;
+    color: var(--color-text);
+    border-color: var(--color-border);
+}
+.outlined .buttonIcon {
+    color: var(--color-text);
+}
+.outlined:hover {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336);
+}
+
+/* Variant: Icon */
+.icon {
+    background-color: var(--color-primary);
+    color: inherit; /* Let children define color */
+    padding: 8px;
+    border-radius: 8px;
+    justify-content: center;
+    align-items: center;
+    border-color: var(--color-primary);
+    display: inline-flex;
+}
+
+/* Force icon color inside icon button */
+.icon .buttonIcon {
+    color: var(--color-text);
+}
+
+.icon:hover {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336);
+}
+/* Variant: Action */
+.action {
+    background-color: var(--color-green);
+    color: var(--color-white);
+    border-color: var(--color-green);
+}
+
+.action:hover {
+    background-color: var(--color-dark-green);
+}
+
+/* Variant: Danger */
+.danger {
+    background-color: var(--color-red);
+    color: var(--color-white);
+    border-color: var(--color-red);
+}
+
+.danger:hover {
+    background-color: var(--color-dark-red);
+}
+
+.submit {
+    background-color: var(--color-light2-gray);
+    color: var(--color-white);
+}
+.submit:hover {
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336);
+}
+
+.button:disabled,
+.primary:disabled,
+.secondary:disabled,
+.outlined:disabled,
+.icon:disabled,
+.action:disabled,
+.danger:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+    box-shadow: none;
+    /* optionally, tweak colors to visually indicate disabled */
+}

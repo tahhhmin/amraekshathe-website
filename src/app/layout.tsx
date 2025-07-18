@@ -1,6 +1,16 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import HeaderLayout from "@/components/header/HeaderLayout";
+import ClientProviders from "./ClientProviders";  // Use relative import here
+import { Montserrat } from "next/font/google";
+
+const montserrat = Montserrat({
+    subsets: ["latin"],
+    variable: "--font-heading",
+    weight: ["400", "500", "600", "700"],
+});
+
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,14 +29,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
-  return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {children}
-      </body>
-    </html>
-  );
+}) {
+    return (
+        <html lang="en" suppressHydrationWarning>
+        <body className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable}`}>
+                <ClientProviders>
+                    <HeaderLayout />
+                    {children}
+                </ClientProviders>
+            </body>
+        </html>
+    );
 }
