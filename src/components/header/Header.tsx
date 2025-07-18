@@ -10,6 +10,8 @@ import LogoDark from '../../../public/amraekshathe-dark-icon.svg';
 import AuthButton from '../buttons/AuthButton';
 import ThemeToggleButton from '../buttons/ThemeToggleButton';
 import NavigationMenu, { NavItem } from '@/ui/NavigationMenu';
+import Sheet from '@/ui/sheet';
+import { Menu } from 'lucide-react';
 
 const navItems: NavItem[] = [
   { name: 'Home', path: '/' },
@@ -108,6 +110,9 @@ export default function Header() {
         <div className={Styles.buttonContainer}>
           <AuthButton />
           <ThemeToggleButton />
+          <div className={Styles.menuButtonContainer}>
+            <Sheet buttonIcon={Menu} menuName="Navigation" footer items={navItems} />
+          </div>
         </div>
       </header>
     </div>

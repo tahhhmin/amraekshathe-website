@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { ChevronRight, ChevronLeft, ChevronDown } from 'lucide-react';
 import styles from './NavigationMenu.module.css';
+import Button from './button/Button';
 
 const SCROLL_AMOUNT = 300;
 
@@ -115,14 +116,14 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
         <nav className={styles.nav}>
         {/* Scroll Left Button */}
         {showLeft && (
-            <button
-            className={`${styles.scrollButton} ${styles.scrollLeft}`}
-            onClick={() => scroll('left')}
-            aria-label="Scroll Left"
-            type="button"
-            >
-            <ChevronLeft size={24} />
-            </button>
+
+            <div  className={` ${styles.scrollLeft}`}><Button
+                variant='icon'
+                icon='ChevronLeft'
+                showIcon
+                onClick={() => scroll('left')}
+                aria-label="Scroll Left"
+            /></div>
         )}
 
         {/* Navbar and Scroll Right Wrapper */}
@@ -161,14 +162,13 @@ const NavigationMenu: React.FC<NavigationMenuProps> = ({
             </div>
 
             {showRight && (
-            <button
-                className={`${styles.scrollButton} ${styles.scrollRight}`}
-                onClick={() => scroll('right')}
-                aria-label="Scroll Right"
-                type="button"
-            >
-                <ChevronRight size={24} />
-            </button>
+            <div  className={` ${styles.scrollRight}`}><Button
+                variant='icon'
+                icon='ChevronRight'
+                showIcon
+                onClick={() => scroll('left')}
+                aria-label="Scroll Left"
+            /></div>
             )}
         </div>
 

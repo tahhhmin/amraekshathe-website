@@ -20,6 +20,7 @@
     padding: 0.5rem 1.15rem;
     border-radius: 12px;
     border: 1px solid var(--color-border);
+    gap: 1rem;
 }
 .logoName {
     text-decoration: none;
@@ -49,7 +50,9 @@
 .logoDark {
   display: none;
 }
-
+.menuButtonContainer {
+    display: none;
+}
 @media (prefers-color-scheme: dark) {
   .logoLight {
     display: none;
@@ -57,4 +60,20 @@
   .logoDark {
     display: block;
   }
+}
+
+@media (max-width: 1440px) {
+    .header {
+    width: 100%;
+
+    }
+}
+
+@media (max-width: 600px) {
+    .navigationContainer {
+        display: none;
+    }
+    .menuButtonContainer {
+    display: block;
+}
 }

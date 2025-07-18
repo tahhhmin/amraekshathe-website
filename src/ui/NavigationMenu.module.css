@@ -142,8 +142,8 @@
     top: 50%;
     transform: translateY(-50%);
     padding: 8px;
-    background: var(--color-orange);
-    border: 1px solid var(--color-orange);
+    background: var(--color-primary);
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
