@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Signup Successful - Welcome!</title>
+    <style>
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f9f9f9;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        max-width: 500px;
+        margin: auto;
+        background-color: #fff;
+        border-radius: 8px;
+        padding: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        color: #111;
+      }
+
+      p {
+        font-size: 15px;
+        line-height: 1.6;
+      }
+
+      .footer {
+        margin-top: 30px;
+        font-size: 12px;
+        color: #777;
+        text-align: center;
+      }
+
+      .welcome-box {
+        background-color: #eaf9ea;
+        padding: 15px 20px;
+        border-left: 5px solid #3cba54;
+        border-radius: 6px;
+        margin-top: 20px;
+        font-weight: bold;
+        color: #2a7b2e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Welcome to Hashi Ekshathe!</h2>
+
+      <p>Hi {{name}},</p>
+
+      <div class="welcome-box">
+        Your account has been successfully created and verified.
+      </div>
+
+      <p>
+        We're excited to have you onboard! You can now log in to your account, explore
+        opportunities, and get involved in the impact we're building together.
+      </p>
+
+      <p>
+        If you have any questions or feedback, feel free to reach out. We're always here
+        to help.
+      </p>
+
+      <p>Warm regards,<br />The Hashi Ekshathe Team</p>
+
+      <div class="footer">
+        &copy; {{year}} Hashi Ekshathe. All rights reserved.
+      </div>
+    </div>
+  </body>
+</html>
