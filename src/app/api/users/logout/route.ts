@@ -3,19 +3,27 @@
 import { connectDB } from "@/config/connectDB";
 import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(_: NextRequest) {
-    try {
-        await connectDB();
+export async function POST(request: NextRequest) {
+  try {
+    await connectDB();
 
-        const response = NextResponse.json({ message: "Logged out successfully", success: true });
-        response.cookies.set("token", "", {
-        httpOnly: true,
-        path: "/",
-        expires: new Date(0),
-        });
+    const response = NextResponse.json({
+      message: "Logged out successfully",
+      success: true,
+    });
 
-        return response;
-    } catch (error: any) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
-    }
+    response.cookies.set("token", "", {
+      httpOnly: true,
+      path: "/",
+      expires: new Date(0), // Forces immediate expiration
+    });
+
+    return response;
+  } catch (error) {
+    const err = error as Error;
+    return NextResponse.json(
+      { success: false, message: err.message },
+      { status: 500 }
+    );
+  }
 }

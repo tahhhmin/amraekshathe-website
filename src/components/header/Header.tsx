@@ -3,7 +3,6 @@
 import Styles from './Header.module.css';
 import Link from 'next/link';
 
-import Logo from '../../../public/amraekshathe-logo.svg'
 import AuthButton from '../buttons/AuthButton';
 import ThemeToggleButton from '../buttons/ThemeToggleButton';
 import NavigationMenu, { NavItem } from '@/ui/NavigationMenu';

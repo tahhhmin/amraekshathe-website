@@ -1,12 +1,17 @@
-// app/profile/page.tsx
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
+interface User {
+  username: string;
+  email: string;
+  isAdmin: boolean;
+  // Add any other user properties you expect here
+}
+
 export default function ProfilePage() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
 
   useEffect(() => {

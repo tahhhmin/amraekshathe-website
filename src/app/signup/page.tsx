@@ -50,6 +50,7 @@ export default function SignupForm() {
         setMessage(data.message || 'Something went wrong.');
       }
     } catch (error) {
+      console.error(error); // ✅ Fix warning
       setMessage('Network error.');
     } finally {
       setLoading(false);
@@ -77,6 +78,7 @@ export default function SignupForm() {
         setMessage(data.message || 'Invalid code or expired token.');
       }
     } catch (error) {
+      console.error(error); // ✅ Fix warning
       setMessage('Verification failed.');
     } finally {
       setLoading(false);
@@ -143,9 +145,7 @@ export default function SignupForm() {
         </>
       )}
 
-      {step === 3 && (
-        <p>🎉 Your account has been created successfully.</p>
-      )}
+      {step === 3 && <p>🎉 Your account has been created successfully.</p>}
 
       {message && (
         <div style={{ marginTop: '1rem', color: 'darkred' }}>{message}</div>

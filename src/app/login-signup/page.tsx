@@ -1,4 +1,4 @@
-// app/auth/page.tsx
+// app/login-signup/page.tsx
 
 "use client";
 
@@ -11,14 +11,16 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [code, setCode] = useState("");
   const [mode, setMode] = useState<"signup" | "verify" | "login">("signup");
+
   const router = useRouter();
 
   const handleSignup = async () => {
     const res = await fetch("/api/users/signup", {
       method: "POST",
-      body: JSON.stringify({ email, username, password })
+      body: JSON.stringify({ email, username, password }),
     });
     const data = await res.json();
+
     if (data.success) {
       alert("Verification code sent to email");
       setMode("verify");
@@ -30,9 +32,10 @@ export default function AuthPage() {
   const handleVerify = async () => {
     const res = await fetch("/api/users/verify-signup", {
       method: "POST",
-      body: JSON.stringify({ email, password, code })
+      body: JSON.stringify({ email, password, code }),
     });
     const data = await res.json();
+
     if (data.success) {
       alert("Signup complete. You can now log in.");
       setMode("login");
@@ -44,9 +47,10 @@ export default function AuthPage() {
   const handleLogin = async () => {
     const res = await fetch("/api/users/login", {
       method: "POST",
-      body: JSON.stringify({ email, password })
+      body: JSON.stringify({ email, password }),
     });
     const data = await res.json();
+
     if (data.success) {
       router.push("/profile");
     } else {
@@ -57,9 +61,14 @@ export default function AuthPage() {
   return (
     <div className="max-w-md mx-auto p-6">
       <h1 className="text-2xl font-semibold mb-4">
-        {mode === "signup" ? "Sign Up" : mode === "verify" ? "Verify Email" : "Login"}
+        {mode === "signup"
+          ? "Sign Up"
+          : mode === "verify"
+          ? "Verify Email"
+          : "Login"}
       </h1>
 
+      {/* Email Input */}
       {mode !== "verify" && (
         <input
           type="email"
@@ -70,18 +79,18 @@ export default function AuthPage() {
         />
       )}
 
+      {/* Username Input (only in signup) */}
       {mode === "signup" && (
-        <>
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            className="block w-full mb-2 px-4 py-2 border rounded"
-          />
-        </>
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Username"
+          className="block w-full mb-2 px-4 py-2 border rounded"
+        />
       )}
 
+      {/* Password Input (in signup and login) */}
       {(mode === "signup" || mode === "login") && (
         <input
           type="password"
@@ -92,6 +101,7 @@ export default function AuthPage() {
         />
       )}
 
+      {/* Verification Code Input (in verify mode only) */}
       {mode === "verify" && (
         <input
           type="text"
@@ -102,23 +112,39 @@ export default function AuthPage() {
         />
       )}
 
+      {/* Action Button */}
       <button
-        onClick={mode === "signup" ? handleSignup : mode === "verify" ? handleVerify : handleLogin}
+        onClick={
+          mode === "signup"
+            ? handleSignup
+            : mode === "verify"
+            ? handleVerify
+            : handleLogin
+        }
         className="bg-blue-600 text-white px-4 py-2 rounded w-full hover:bg-blue-700"
       >
-        {mode === "signup" ? "Send Verification Code" : mode === "verify" ? "Verify & Register" : "Login"}
+        {mode === "signup"
+          ? "Send Verification Code"
+          : mode === "verify"
+          ? "Verify & Register"
+          : "Login"}
       </button>
 
+      {/* Footer Links */}
       <div className="mt-4 text-sm text-center">
         {mode === "signup" ? (
           <span>
-            Already have an account?{' '}
-            <button className="underline" onClick={() => setMode("login")}>Login</button>
+            Already have an account?{" "}
+            <button className="underline" onClick={() => setMode("login")}>
+              Login
+            </button>
           </span>
         ) : mode === "login" ? (
           <span>
-            Don't have an account?{' '}
-            <button className="underline" onClick={() => setMode("signup")}>Sign Up</button>
+            Don&#39;t have an account?{" "}
+            <button className="underline" onClick={() => setMode("signup")}>
+              Sign Up
+            </button>
           </span>
         ) : null}
       </div>

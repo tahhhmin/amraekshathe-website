@@ -7,28 +7,47 @@ import { connectDB } from "@/config/connectDB";
 import User from "@/models/Users";
 
 export async function POST(req: NextRequest) {
-    try {
-        await connectDB();
-        const { email, username, password } = await req.json();
+  try {
+    await connectDB();
+    const { email, username, password } = await req.json();
 
-        if (!email || !username || !password) {
-        return NextResponse.json({ success: false, message: "Missing required fields" }, { status: 400 });
-        }
-
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-        return NextResponse.json({ success: false, message: "User already exists" }, { status: 400 });
-        }
-
-        const code = generateVerificationToken();
-        const expiry = getVerificationTokenExpiry();
-
-        await User.create({ email, username, password, verifyToken: code, verifyTokenExpiry: expiry });
-
-        await sendEmail("userSignupCode", { to: email, code });
-
-        return NextResponse.json({ success: true, message: "Verification code sent to your email" });
-    } catch (error: any) {
-        return NextResponse.json({ success: false, message: error.message }, { status: 500 });
+    if (!email || !username || !password) {
+      return NextResponse.json(
+        { success: false, message: "Missing required fields" },
+        { status: 400 }
+      );
     }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json(
+        { success: false, message: "User already exists" },
+        { status: 400 }
+      );
+    }
+
+    const code = generateVerificationToken();
+    const expiry = getVerificationTokenExpiry();
+
+    await User.create({
+      email,
+      username,
+      password,
+      verifyToken: code,
+      verifyTokenExpiry: expiry,
+    });
+
+    await sendEmail("userSignupCode", { to: email, code });
+
+    return NextResponse.json({
+      success: true,
+      message: "Verification code sent to your email",
+    });
+  } catch (error: unknown) {
+    const err = error as Error;
+    return NextResponse.json(
+      { success: false, message: err.message },
+      { status: 500 }
+    );
+  }
 }
