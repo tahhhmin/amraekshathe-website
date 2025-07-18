@@ -1,9 +1,9 @@
 // /api/users/logout/route.ts
 
 import { connectDB } from "@/config/connectDB";
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     await connectDB();
 

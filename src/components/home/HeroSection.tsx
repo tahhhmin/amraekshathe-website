@@ -20,7 +20,7 @@ export default function HeroSection() {
           <h2 className={Styles.subtitle}>
             Join our platform to discover volunteer
             opportunities near you or showcase your
-            organization's projects to passionate
+            organization&apos;s projects to passionate
             volunteers ready to make a difference.
           </h2>
         </div>
