@@ -675,7 +675,7 @@ export default function AuthPage() {
 
               />
               <p className={Styles.switchModeText}>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <button
                   className={Styles.switchModeButton}
                   onClick={() => setMode("signup")}

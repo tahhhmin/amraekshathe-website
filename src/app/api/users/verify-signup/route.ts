@@ -3,8 +3,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/config/connectDB";
 import User from "@/models/Users";
-import bcrypt from "bcryptjs";
 import { sendEmail } from "@/utils/sendMail";
+
+// Type definitions
+interface VerifyRequestBody {
+  email: string;
+  code: string | number;
+}
+
+interface ResendRequestBody {
+  email: string;
+}
 
 function isValidEmail(email: string): boolean {
   const emailRegex = /^\S+@\S+\.\S+$/;
@@ -15,7 +24,8 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    const { email, code } = await req.json();
+    const requestBody: VerifyRequestBody = await req.json();
+    const { email, code } = requestBody;
 
     // Validate required fields
     if (!email || !code) {
@@ -150,7 +160,8 @@ export async function PUT(req: NextRequest) {
   try {
     await connectDB();
 
-    const { email } = await req.json();
+    const requestBody: ResendRequestBody = await req.json();
+    const { email } = requestBody;
 
     if (!email) {
       return NextResponse.json(
@@ -216,7 +227,6 @@ export async function PUT(req: NextRequest) {
   } catch (error: unknown) {
     console.error("Resend verification error:", error);
     
-    const err = error as Error;
     return NextResponse.json(
       { success: false, message: "Internal server error. Please try again later" },
       { status: 500 }

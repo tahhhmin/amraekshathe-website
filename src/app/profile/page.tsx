@@ -15,14 +15,29 @@ const MapSection = dynamic(() => import("@/components/profile/MapSection"), {
   ssr: false,
 });
 
+interface Certificate {
+  id: string;
+  name: string;
+  dateEarned: string;
+  issuer: string;
+}
+
+interface Milestone {
+  id: string;
+  title: string;
+  description: string;
+  dateAchieved: string;
+  type: string;
+}
+
 interface User {
     username: string;
     email: string;
     isAdmin: boolean;
     name: string;
     dateJoined: string;
-    certificates: any[]; // Array of certificates
-    milestones: any[]; // Array of milestones
+    certificates: Certificate[];
+    milestones: Milestone[];
     totalHoursVolunteered: number;
     totalProjectsJoined: number;
     impactScore: number;
@@ -83,11 +98,6 @@ export default function ProfilePage() {
     }
     fetchProfile();
   }, [router]);
-
-  const handleLogout = async () => {
-    await fetch("/api/users/logout", { method: "POST" });
-    router.push("/");
-  };
 
   return (
     <section className={Styles.section}>

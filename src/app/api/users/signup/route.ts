@@ -7,20 +7,77 @@ import { connectDB } from "@/config/connectDB";
 import User from "@/models/Users";
 import bcrypt from "bcryptjs";
 
-function isValidGender(g: any): g is "male" | "female" | "other" {
-  return ["male", "female", "other"].includes(g);
+// Type definitions
+type Gender = "male" | "female" | "other";
+type UserType = "volunteer" | "organisation";
+
+interface GeoJSONPoint {
+  type: "Point";
+  coordinates: [number, number];
 }
 
-function isValidUserType(t: any): t is "volunteer" | "organisation" {
-  return ["volunteer", "organisation"].includes(t);
+interface SignupRequestBody {
+  email: string;
+  username: string;
+  password: string;
+  name: string;
+  phoneNumber: string;
+  dateOfBirth: string;
+  gender: Gender;
+  institution: string;
+  educationLevel: string;
+  address: string;
+  location?: GeoJSONPoint;
+  userType?: UserType;
 }
 
-function isValidLocation(loc: any): boolean {
+interface UserData {
+  email: string;
+  username: string;
+  name: string;
+  phoneNumber: string;
+  dateOfBirth: Date;
+  gender: Gender;
+  institution: string;
+  educationLevel: string;
+  address: string;
+  verifyToken: string;
+  verifyTokenExpiry: Date;
+  password: string;
+  userType: UserType;
+  isVerified: boolean;
+  isAdmin: boolean;
+  dateJoined: Date;
+  totalHoursVolunteered: number;
+  totalProjectsJoined: number;
+  impactScore: number;
+  certifications: unknown[];
+  milestones: unknown[];
+  organisations: unknown[];
+  currentlyWorkingProjects: unknown[];
+  location?: GeoJSONPoint;
+}
+
+function isValidGender(g: unknown): g is Gender {
+  return typeof g === "string" && ["male", "female", "other"].includes(g);
+}
+
+function isValidUserType(t: unknown): t is UserType {
+  return typeof t === "string" && ["volunteer", "organisation"].includes(t);
+}
+
+function isValidLocation(loc: unknown): loc is GeoJSONPoint {
   if (!loc || typeof loc !== "object") return false;
-  if (loc.type !== "Point") return false;
-  if (!Array.isArray(loc.coordinates)) return false;
-  if (loc.coordinates.length !== 2) return false;
-  return loc.coordinates.every((c: any) => typeof c === "number" && c >= -180 && c <= 180);
+  
+  const location = loc as Record<string, unknown>;
+  
+  if (location.type !== "Point") return false;
+  if (!Array.isArray(location.coordinates)) return false;
+  if (location.coordinates.length !== 2) return false;
+  
+  return location.coordinates.every((c: unknown) => 
+    typeof c === "number" && c >= -180 && c <= 180
+  );
 }
 
 function isValidEmail(email: string): boolean {
@@ -45,6 +102,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
+    const requestBody: SignupRequestBody = await req.json();
     const {
       email,
       username,
@@ -58,7 +116,7 @@ export async function POST(req: NextRequest) {
       address,
       location,
       userType = "volunteer", // Default to volunteer
-    } = await req.json();
+    } = requestBody;
 
     // Validate all required fields
     if (
@@ -186,7 +244,7 @@ export async function POST(req: NextRequest) {
     const expiry = getVerificationTokenExpiry();
 
     // Prepare user data
-    const userData: any = {
+    const userData: UserData = {
       email: email.toLowerCase(),
       username: username.toLowerCase(),
       name: name.trim(),

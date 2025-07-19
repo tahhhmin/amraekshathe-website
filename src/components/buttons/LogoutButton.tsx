@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Button from "@/ui/button/Button";
 
 export default function LogoutButton() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function LogoutButton() {
         alert(data.message || "Logout failed");
       }
     } catch (error) {
+      console.error("Logout error:", error);
       alert("An error occurred while logging out.");
     } finally {
       setLoading(false);
@@ -30,8 +32,10 @@ export default function LogoutButton() {
   };
 
   return (
-    <button onClick={handleLogout} disabled={loading}>
-      {loading ? "Logging out..." : "Logout"}
-    </button>
+    <Button 
+      onClick={handleLogout}
+      disabled={loading}
+      label={loading ? "Logging out..." : "Logout"}
+    />
   );
 }
