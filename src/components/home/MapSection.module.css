@@ -1,0 +1,93 @@
+.section {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--color-background);
+}
+
+.container {
+  width: 90%;
+  max-width: 1200px;
+  height: 90%; /* This is important! Gives .mapContainer real space */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.heading {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-align: center;
+
+}
+.mapWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+}
+.mapContainer {
+    flex: 1;
+    width: 100%;
+    height: 100%; /* Makes sure it's as tall as .container allows */
+    overflow: hidden;
+    border-radius: 12px 12px 0 0;
+}
+
+.map {
+    width: 100%;
+    height: 100%; /* Critical! Makes the map fill .mapContainer */
+}
+
+
+
+.mapInfo {
+    background-color: var(--color-primary);
+    width: 100%;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 0 0 12px 12px;
+}
+.mapButton {
+    margin: auto 0;
+}
+.mapInfoTitle, .mapInfoSubtitle {
+    color: var(--color-black);
+}
+
+@media (max-width: 1440px) {
+    .section {
+        height: 700px;
+        padding: 0 2rem;
+    }
+    .container {
+        width: 100%;
+        padding: 0 rem;
+    }
+}
+@media (max-width: 800px) {
+    .mapInfo {
+        gap: 1rem;
+        display: flex;
+        flex-direction: column;
+
+    }
+    .mapInfoTitle {
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .mapInfoDescription {
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+}
+

@@ -9,9 +9,9 @@
     gap: 0.3rem;
     height: fit-content;
     border: 1px solid transparent;
-    transition: all 0.2s ease; /* fallback for var */
+    transition: all 0.2s ease;
     box-sizing: border-box;
-    white-space: pre-wrap;
+    white-space: nowrap; 
 }
 
 .button:focus-visible {
@@ -51,7 +51,7 @@
 
 /* Variant: Outlined */
 .outlined {
-    background-color: transparent;
+    background-color: var(--color-background);
     color: var(--color-text);
     border-color: var(--color-border);
 }

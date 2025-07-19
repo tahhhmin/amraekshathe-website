@@ -4,6 +4,8 @@ import "./globals.css";
 import HeaderLayout from "@/components/header/HeaderLayout";
 import ClientProviders from "./ClientProviders";  // Use relative import here
 import { Montserrat } from "next/font/google";
+import FooterLayout from "@/components/footer/FooterLayout";
+import 'leaflet/dist/leaflet.css';
 
 const montserrat = Montserrat({
     subsets: ["latin"],
@@ -38,6 +40,7 @@ export default function RootLayout({
                 <ClientProviders>
                     <HeaderLayout />
                     {children}
+                    <FooterLayout />
                 </ClientProviders>
             </body>
         </html>
