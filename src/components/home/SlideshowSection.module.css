@@ -4,9 +4,3 @@
     height: 100px;
     background-color: var(--color-primary);
 }
-
-@media (max-width: 1440px) {
-    .section {
-        margin-top: 2rem;
-    }
-}

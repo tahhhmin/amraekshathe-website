@@ -1,0 +1,30 @@
+.otpContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.otpInputWrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+.otpInput {
+    background-color: var(--color-input);
+    color: var(--color-muted);
+    font-family: var(--font-family);
+    font-size: 1rem;
+    font-weight: 400;
+    text-align: center;
+    padding: 0;
+    border: 1px solid var(--color-border);
+    border-radius: 0.5rem;
+    width: 3rem;
+    height: 3rem;
+    box-sizing: border-box;
+    transition: box-shadow 0.2s ease;
+}
+.otpInput:focus {
+    outline: none;
+  	box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336);
+}
+

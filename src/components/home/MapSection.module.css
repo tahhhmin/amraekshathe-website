@@ -1,5 +1,5 @@
 .section {
-    height: 100vh;
+    height: 800px;
     width: 100%;
     display: flex;
     align-items: center;
@@ -8,14 +8,16 @@
 }
 
 .container {
-  width: 90%;
-  max-width: 1200px;
-  height: 90%; /* This is important! Gives .mapContainer real space */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1.5rem;
+    max-width: 1440px;
+    width: 100%;
+    height: 90%; /* This is important! Gives .mapContainer real space */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    border-radius: 12px;
+    padding: 0;
 }
 
 
@@ -26,6 +28,7 @@
     height: 100%;
     box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
+    border: 1px solid var(--color-border);
 }
 .mapContainer {
     flex: 1;
@@ -43,7 +46,7 @@
 
 
 .mapInfo {
-    background-color: var(--color-primary);
+    background-color: var(--color-card);
     width: 100%;
     padding: 1rem 2rem;
     display: flex;
@@ -53,18 +56,21 @@
 .mapButton {
     margin: auto 0;
 }
-.mapInfoTitle, .mapInfoSubtitle {
-    color: var(--color-black);
+.mapInfoSubtitle {
+    color: var(--color-muted);
 }
-
+.mapInfoDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
 @media (max-width: 1440px) {
     .section {
         height: 700px;
-        padding: 0 1rem;
     }
     .container {
         width: 100%;
-        padding: 0 rem;
+        padding: 0 1rem;
     }
 }
 @media (max-width: 800px) {
@@ -73,11 +79,6 @@
         display: flex;
         flex-direction: column;
 
-    }
-    .mapInfoDescription {
-        display: flex;
-        flex-direction: column;
-        gap: 0.25rem;
     }
 }
 

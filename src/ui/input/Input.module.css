@@ -1,0 +1,190 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.wrapper {
+    display: flex;
+    gap: 0.5rem;
+}
+.inputWrapper {
+    position: relative;
+    flex: 1;
+    display: flex;
+    align-items: center;
+}
+.icon {
+    position: absolute;
+    left: 0.75rem;  
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-light2-gray);
+    pointer-events: none;
+}
+.chevronIcon {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-muted);
+}
+.inputelement {
+    width: 100%;
+    background-color: var(--color-input);
+    color: var(--color-muted);
+
+    padding: 8px 16px;
+    padding-left: calc(1.75rem + 0.75rem); /* only if icon is shown */
+    
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+
+    display: inline-flex;
+    align-items: center;
+
+    box-sizing: border-box;
+    height: 100%;
+    flex: 1;
+
+    font-size: 16px;
+    font-weight: 400;
+    font-family: var(--font-family);
+}
+.inputelement:focus {
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.336); 
+}
+.inputelement:disabled {
+    background-color: var(--color-muted);
+    color: var(--color-background);
+    cursor: not-allowed;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.calendarPopup {
+  position: absolute;
+  top: calc(100% + 0.25rem);
+  right: 0;
+  z-index: 1000;
+
+  background-color: var(--color-input);
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  padding: 0.5rem;
+  /* optional max-width or width */
+  max-width: 320px;
+}
+
+/* Custom calendar style */
+.customDatepicker {
+  --_bg: var(--color-input);
+  --_text: var(--color-text);
+  --_border: var(--color-border);
+  --_accent: var(--color-orange);
+  --_hover: var(--color-orange);
+  --_background: var(--color-background);
+
+  background-color: var(--_bg);
+  color: var(--_text);
+  font-family: var(--font-family);
+  border: 1px solid var(--_border);
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: none; /* removed because popup has shadow */
+  font-size: 14px;
+}
+
+/* Header */
+.customDatepicker .react-datepicker__header {
+  background-color: brown;
+  border-bottom: 1px solid var(--_border);
+  padding: 0.75rem 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+/* Navigation arrows */
+.customDatepicker .react-datepicker__navigation {
+  top: 10px;
+}
+.customDatepicker .react-datepicker__navigation-icon::before {
+  border-color: var(--_text);
+}
+
+/* Day cells */
+.customDatepicker .react-datepicker__day {
+  color: var(--_text);
+  padding: 0.5rem;
+  border-radius: 6px;
+  transition: background-color 0.2s ease;
+}
+
+/* Today highlight */
+.customDatepicker .react-datepicker__day--today {
+  border: 1px dashed var(--_accent);
+  font-weight: 600;
+}
+
+/* Hover state */
+.customDatepicker .react-datepicker__day:hover {
+  background-color: var(--_hover);
+  cursor: pointer;
+}
+
+/* Selected day */
+.customDatepicker .react-datepicker__day--selected,
+.customDatepicker .react-datepicker__day--keyboard-selected {
+  background-color: var(--_accent);
+  color: #fff;
+}
+
+/* Disabled days */
+.customDatepicker .react-datepicker__day--disabled {
+  color: var(--color-muted);
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Time selector container */
+.customDatepicker .react-datepicker__time-container {
+  border-left: 1px solid var(--_border);
+}
+
+.customDatepicker .react-datepicker__time {
+  background-color: var(--_background);
+}
+
+.customDatepicker .react-datepicker__time-box {
+  width: 100%;
+}
+
+.customDatepicker .react-datepicker__time-list-item {
+  padding: 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s ease;
+}
+
+.customDatepicker .react-datepicker__time-list-item--selected {
+  background-color: var(--_accent);
+  color: #fff;
+}
+
+.customDatepicker .react-datepicker__time-list-item:hover {
+  background-color: var(--_hover);
+  cursor: pointer;
+}
