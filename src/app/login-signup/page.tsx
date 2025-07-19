@@ -277,7 +277,7 @@ export default function AuthPage() {
       if (data.success) {
         showMessage("success", "Login successful! Redirecting...");
         setTimeout(() => {
-          router.push("/dashboard");
+          router.push("/profile");
         }, 1000);
       } else {
         showMessage("error", data.message || "Login failed");
@@ -692,3 +692,7 @@ export default function AuthPage() {
     </div>
   );
 }
+
+
+
+

@@ -19,7 +19,7 @@ export default function LogoutButton() {
 
       if (data.success) {
         // Redirect user after successful logout
-        router.push("/login"); // or "/" or wherever you want
+        router.push("/"); // or "/" or wherever you want
       } else {
         alert(data.message || "Logout failed");
       }
