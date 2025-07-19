@@ -32,7 +32,9 @@ export default function MapSection() {
       import('leaflet'),
       import('react-leaflet')
     ]).then(([L, RL]) => {
-      delete (L.Icon.Default.prototype as any)._getIconUrl;
+      // ✅ Fix: Avoid 'any' by casting to known shape
+      delete (L.Icon.Default.prototype as unknown as { _getIconUrl?: () => string })._getIconUrl;
+
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: '/leaflet/marker-icon-2x.png',
         iconUrl: '/leaflet/marker-icon.png',
@@ -45,28 +47,28 @@ export default function MapSection() {
         const map = useMap();
         useEffect(() => {
           map.setView(position, 13); // Zoom in closer
-        }, [position]);
+        }, [map, position]); // ✅ Fix: added map to dependencies
         return null;
       };
 
       setLeafletMap(
-            <MapContainer
-            center={location}
-            zoom={13}
-            scrollWheelZoom={true}
-            className={Styles.map}
-            >
-            <TileLayer
-                attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-            <RecenterMap position={location} />
-            <Marker position={location}>
-                <Popup>
-                <b>Your Location</b>
-                </Popup>
-            </Marker>
-            </MapContainer>
+        <MapContainer
+          center={location}
+          zoom={13}
+          scrollWheelZoom={true}
+          className={Styles.map}
+        >
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <RecenterMap position={location} />
+          <Marker position={location}>
+            <Popup>
+              <b>Your Location</b>
+            </Popup>
+          </Marker>
+        </MapContainer>
       );
     });
   }, [location]);
@@ -76,20 +78,22 @@ export default function MapSection() {
       <div className={Styles.container}>
         <h1 className={Styles.heading}>Explore Projects Near You</h1>
         <div className={Styles.mapWrapper}>
-            <div className={Styles.mapContainer}>
-                {LeafletMap || <p>Loading map...</p>}
+          <div className={Styles.mapContainer}>
+            {LeafletMap || <p>Loading map...</p>}
+          </div>
+          <div className={Styles.mapInfo}>
+            <div className={Styles.mapInfoDescription}>
+              <h1 className={Styles.mapInfoTitle}>Find Projects in Your Area</h1>
+              <h3 className={Styles.mapInfoSubtitle}>Join Thousands of volunteers making a difference</h3>
             </div>
-            <div className={Styles.mapInfo}>
-                <div className={Styles.mapInfoDescription}>
-                    <h1 className={Styles.mapInfoTitle}>Find Projects in Your Area</h1>
-                    <h3 className={Styles.mapInfoSubtitle}>Join Thousands of volunteers making a difference</h3>
-                </div>
-                <div className={Styles.mapButton}><Button
-                    variant='outlined'
-                    label='View All Projects'
-                    showIcon
-                /></div>
+            <div className={Styles.mapButton}>
+              <Button
+                variant='outlined'
+                label='View All Projects'
+                showIcon
+              />
             </div>
+          </div>
         </div>
       </div>
     </section>
