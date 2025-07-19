@@ -4,17 +4,22 @@ import { useState } from "react";
 import dynamic from "next/dynamic";
 import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent } from "leaflet";
-import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
 // Dynamically import MapContainer to prevent SSR issues
-const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), {
-  ssr: false,
-});
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  {
+    ssr: false,
+  }
+);
 
-// Custom marker icon using inline SVG
+// Custom marker icon using inline SVG and Leaflet icon creation only on client
 function CustomMarker({ position }: { position: [number, number] }) {
+  // Import Leaflet here to avoid SSR issues
+  const L = require("leaflet");
+
   const icon = L.divIcon({
     className: styles.customMarkerIcon,
     html: `
@@ -127,7 +132,12 @@ export default function AddProjectPage() {
           </MapContainer>
         </div>
 
-        <button type="submit" className={styles.button} disabled={loading} style={{ marginTop: "10px" }}>
+        <button
+          type="submit"
+          className={styles.button}
+          disabled={loading}
+          style={{ marginTop: "10px" }}
+        >
           {loading ? "Saving..." : "Add Project"}
         </button>
       </form>
