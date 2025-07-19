@@ -3,44 +3,42 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useMapEvents, Marker, Popup, TileLayer } from "react-leaflet";
-import { MapPin } from "lucide-react";
-
+import * as L from "leaflet";
 import styles from "./page.module.css";
 
-// Custom marker component to use Lucide icon
+// Custom marker component using inline SVG icon styled by CSS
 function CustomMarker({ position }: { position: [number, number] }) {
-  // Leaflet marker expects [lat, lng], lucide icon is just an SVG component
-  // We'll create a div icon with Lucide SVG inside
-
-  // Using react-leaflet Marker with a custom DivIcon requires a bit more code,
-  // so instead we can render a Marker without icon, then render MapPin SVG at the same coords using a custom overlay,
-  // but for simplicity, let's use a DivIcon directly:
-
-  const L = require("leaflet");
-
   const icon = L.divIcon({
-    className: styles.customMarkerIcon, // style this class for size/color
-    html: `<svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" viewBox="0 0 24 24" width="24" height="24"><path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`,
+    className: styles.customMarkerIcon,
+    html: `
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" viewBox="0 0 24 24" width="24" height="24">
+        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/>
+        <circle cx="12" cy="10" r="3"/>
+      </svg>
+    `,
   });
 
-  return <Marker position={position} icon={icon}>
-    <Popup>Selected Location</Popup>
-  </Marker>;
+  return (
+    <Marker position={position} icon={icon}>
+      <Popup>Selected Location</Popup>
+    </Marker>
+  );
 }
 
-// Component to handle clicks on the map and update marker position
 function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
   useMapEvents({
     click(e) {
+      // Leaflet returns lat,lng so keep order consistent here as [lat, lng]
       const { lat, lng } = e.latlng;
-      setMarkerPosition([lng, lat]); // GeoJSON [lng, lat]
-    }
+      setMarkerPosition([lat, lng]);
+    },
   });
-
   return null;
 }
 
-const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), { ssr: false });
+const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), {
+  ssr: false,
+});
 
 export default function AddProject() {
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
@@ -48,12 +46,14 @@ export default function AddProject() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!markerPosition) {
       setError("Please select a location by clicking on the map.");
       return;
     }
+
     setLoading(true);
     setError("");
 
@@ -63,9 +63,10 @@ export default function AddProject() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: projectName,
-          coordinates: markerPosition,
+          coordinates: markerPosition, // [lat, lng]
         }),
       });
+
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error || "Failed to add project");
@@ -73,8 +74,12 @@ export default function AddProject() {
       alert("Project added!");
       setProjectName("");
       setMarkerPosition(null);
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred.");
+      }
     } finally {
       setLoading(false);
     }
@@ -92,13 +97,17 @@ export default function AddProject() {
           onChange={(e) => setProjectName(e.target.value)}
           required
           className={styles.input}
+          disabled={loading}
         />
 
-        {/* Show coordinates if selected */}
         <input
           type="text"
           readOnly
-          value={markerPosition ? `[${markerPosition[0].toFixed(6)}, ${markerPosition[1].toFixed(6)}]` : ""}
+          value={
+            markerPosition
+              ? `[${markerPosition[0].toFixed(6)}, ${markerPosition[1].toFixed(6)}]`
+              : ""
+          }
           placeholder="Click on map to select coordinates"
           className={styles.input}
           style={{ marginTop: "10px", backgroundColor: "#f0f0f0" }}
@@ -111,10 +120,10 @@ export default function AddProject() {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <LocationMarker setMarkerPosition={setMarkerPosition} />
-          {markerPosition && <CustomMarker position={[markerPosition[1], markerPosition[0]]} />}
+          {markerPosition && <CustomMarker position={markerPosition} />}
         </MapContainer>
 
-        <button type="submit" disabled={loading} className={styles.button}>
+        <button type="submit" disabled={loading} className={styles.button} style={{ marginTop: "10px" }}>
           {loading ? "Saving..." : "Add Project"}
         </button>
       </form>

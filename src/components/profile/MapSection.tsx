@@ -3,7 +3,6 @@
 import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
 
 type Project = {
   _id: string;
@@ -61,10 +60,11 @@ export default function MapNearbyProjectsSection() {
         (pos) => {
           setUserLocation([pos.coords.latitude, pos.coords.longitude]);
         },
-        (err) => {
+        (_err) => {
           setError('Could not retrieve your location');
           setLoading(false);
-          console.error(err);
+          // You can uncomment below if you want console logging:
+          // console.error(_err);
         }
       );
     } else {
@@ -87,7 +87,7 @@ export default function MapNearbyProjectsSection() {
         }
 
         setProjects(json.data);
-      } catch (err) {
+      } catch {
         setError('Failed to load projects');
         setLoading(false);
       }

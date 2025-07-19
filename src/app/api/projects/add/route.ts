@@ -10,9 +10,14 @@ export async function POST(req: NextRequest) {
     const { name, coordinates, address } = body;
 
     // Basic validation
-    if (!name || !coordinates || coordinates.length !== 2) {
+    if (
+      typeof name !== "string" ||
+      !Array.isArray(coordinates) ||
+      coordinates.length !== 2 ||
+      !coordinates.every((coord) => typeof coord === "number")
+    ) {
       return NextResponse.json(
-        { success: false, error: "Name and valid coordinates [longitude, latitude] are required." },
+        { success: false, error: "Name and valid coordinates [latitude, longitude] are required." },
         { status: 400 }
       );
     }
@@ -28,10 +33,17 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ success: true, project: newProject }, { status: 201 });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Failed to create project:", error);
+
+    // Type guard for error message extraction
+    let message = "Server error";
+    if (error && typeof error === "object" && "message" in error && typeof (error as any).message === "string") {
+      message = (error as { message: string }).message;
+    }
+
     return NextResponse.json(
-      { success: false, error: error.message || "Server error" },
+      { success: false, error: message },
       { status: 500 }
     );
   }
