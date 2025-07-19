@@ -1,10 +1,9 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent } from "leaflet";
-import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
@@ -14,8 +13,29 @@ const MapContainer = dynamic(
   { ssr: false }
 );
 
+function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
+  useMapEvents({
+    click(e: LeafletMouseEvent) {
+      const { lat, lng } = e.latlng;
+      setMarkerPosition([lat, lng]);
+    },
+  });
+  return null;
+}
+
 function CustomMarker({ position }: { position: [number, number] }) {
-  // Use useMemo so icon is not recreated on every render
+  // Leaflet (L) must be imported dynamically only on client
+  const [L, setL] = useState<any>(null);
+
+  useEffect(() => {
+    import("leaflet").then((mod) => {
+      setL(mod);
+    });
+  }, []);
+
+  // Wait until Leaflet is loaded
+  if (!L) return null;
+
   const icon = useMemo(() => {
     return L.divIcon({
       className: styles.customMarkerIcon,
@@ -26,23 +46,13 @@ function CustomMarker({ position }: { position: [number, number] }) {
         </svg>
       `,
     });
-  }, []);
+  }, [L]);
 
   return (
     <Marker position={position} icon={icon}>
       <Popup>Selected Location</Popup>
     </Marker>
   );
-}
-
-function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
-  useMapEvents({
-    click(e: LeafletMouseEvent) {
-      const { lat, lng } = e.latlng;
-      setMarkerPosition([lat, lng]);
-    },
-  });
-  return null;
 }
 
 export default function AddProjectPage() {
@@ -63,7 +73,7 @@ export default function AddProjectPage() {
     setLoading(true);
 
     try {
-      const coordinates = [markerPosition[1], markerPosition[0]];
+      const coordinates = [markerPosition[1], markerPosition[0]]; // lng, lat
 
       const res = await fetch("/api/projects/add", {
         method: "POST",
@@ -117,7 +127,11 @@ export default function AddProjectPage() {
         />
 
         <div style={{ marginTop: 10 }}>
-          <MapContainer center={[23.8103, 90.4125]} zoom={12} style={{ height: 300, width: "100%" }}>
+          <MapContainer
+            center={[23.8103, 90.4125]}
+            zoom={12}
+            style={{ height: 300, width: "100%" }}
+          >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <LocationMarker setMarkerPosition={setMarkerPosition} />
             {markerPosition && <CustomMarker position={markerPosition} />}
