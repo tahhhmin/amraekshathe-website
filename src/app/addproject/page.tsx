@@ -6,6 +6,7 @@ import type { LeafletMouseEvent } from "leaflet";
 import type { DivIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
+import { useMapEvents } from "react-leaflet"; // Import useMapEvents directly
 
 // Dynamically import all Leaflet components to prevent SSR issues
 const MapContainer = dynamic(
@@ -28,33 +29,16 @@ const Popup = dynamic(
   { ssr: false }
 );
 
-// Create a wrapper component for useMapEvents hook
+// LocationMarker is now a direct client component that uses useMapEvents
 function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
-  const [isReady, setIsReady] = useState(false);
+  useMapEvents({
+    click(e: LeafletMouseEvent) {
+      const { lat, lng } = e.latlng;
+      setMarkerPosition([lat, lng]);
+    },
+  });
 
-  useEffect(() => {
-    setIsReady(true);
-  }, []);
-
-  if (!isReady) return null;
-
-  // This component will use the hook once it's rendered client-side
-  const MapEventsHandler = dynamic(
-    () => Promise.resolve(() => {
-      const { useMapEvents } = require("react-leaflet");
-      
-      useMapEvents({
-        click(e: LeafletMouseEvent) {
-          const { lat, lng } = e.latlng;
-          setMarkerPosition([lat, lng]);
-        },
-      });
-      return null;
-    }),
-    { ssr: false }
-  );
-
-  return <MapEventsHandler />;
+  return null; // This component doesn't render anything, it just provides map events
 }
 
 function CustomMarker({ position }: { position: [number, number] }) {
@@ -121,7 +105,7 @@ function MapComponent({
 
   return (
     <MapContainer
-      center={[23.8103, 90.4125]}
+      center={[23.8103, 90.4125]} // Centered on Dhaka, Bangladesh
       zoom={12}
       style={{ height: 300, width: "100%" }}
     >
