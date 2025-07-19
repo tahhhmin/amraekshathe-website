@@ -19,6 +19,7 @@ interface ButtonProps {
   showIcon?: boolean;
   icon?: string; // Icon name as string
   disabled?: boolean;
+  loading?: boolean; // Added loading prop
   type?: 'button' | 'submit' | 'reset';
   onClick?: () => void;
 }
@@ -30,6 +31,7 @@ export default function Button({
   icon,
   type = 'button',
   disabled = false,
+  loading = false, // default false
   onClick,
 }: ButtonProps) {
   const IconComponent = (icon && icon in LucideIcons
@@ -42,13 +44,20 @@ export default function Button({
     <button
       className={buttonClassName}
       onClick={onClick}
-      disabled={disabled}
+      disabled={disabled || loading} // disable if loading or disabled
       type={type}
       aria-label={!label && showIcon ? 'button icon' : label}
     >
-      {label && <span>{label}</span>}
-      {showIcon && IconComponent && (
-        <IconComponent className={Styles.buttonIcon} size={24} />
+      {loading ? (
+        // Show loading indicator or text
+        <span className={Styles.loadingText}>Loading...</span>
+      ) : (
+        <>
+          {label && <span>{label}</span>}
+          {showIcon && IconComponent && (
+            <IconComponent className={Styles.buttonIcon} size={24} />
+          )}
+        </>
       )}
     </button>
   );

@@ -11,6 +11,8 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const { email, password } = await req.json();
+    
+    // Validate input
     if (!email || !password) {
       return NextResponse.json(
         { success: false, message: "Missing required fields" },
@@ -18,14 +20,33 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const user = await User.findOne({ email });
-    if (!user || !user.isVerified) {
+    // Validate email format
+    const emailRegex = /^\S+@\S+\.\S+$/;
+    if (!emailRegex.test(email)) {
       return NextResponse.json(
-        { success: false, message: "User not found or not verified" },
+        { success: false, message: "Invalid email format" },
         { status: 400 }
       );
     }
 
+    // Find user and explicitly select password field
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+password');
+    
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "Invalid credentials" },
+        { status: 400 }
+      );
+    }
+
+    if (!user.isVerified) {
+      return NextResponse.json(
+        { success: false, message: "Please verify your email before logging in" },
+        { status: 400 }
+      );
+    }
+
+    // Verify password
     const isPasswordValid = await bcryptjs.compare(password, user.password);
     if (!isPasswordValid) {
       return NextResponse.json(
@@ -34,33 +55,72 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const token = jwt.sign(
-      { id: user._id, email: user.email, username: user.username },
-      process.env.JWT_SECRET!,
-      { expiresIn: "1d" }
-    );
-
-    const response = NextResponse.json({
-      message: "Logged in successfully",
-      success: true,
-    });
-    response.cookies.set("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      path: "/",
-      maxAge: 86400,
-    });
-
-    return response;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
+    // Check if JWT_SECRET exists
+    const jwtSecret = process.env.JWT_SECRET;
+    if (!jwtSecret) {
+      console.error("JWT_SECRET is not defined in environment variables");
       return NextResponse.json(
-        { success: false, message: error.message },
+        { success: false, message: "Server configuration error" },
         { status: 500 }
       );
     }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { 
+        id: user._id.toString(),
+        email: user.email,
+        username: user.username,
+        userType: user.userType
+      },
+      jwtSecret,
+      { expiresIn: "24h" }
+    );
+
+    // Create response
+    const response = NextResponse.json({
+      message: "Logged in successfully",
+      success: true,
+      user: {
+        id: user._id,
+        email: user.email,
+        username: user.username,
+        name: user.name,
+        userType: user.userType
+      }
+    });
+
+    // Set HTTP-only cookie
+    response.cookies.set("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      path: "/",
+      maxAge: 86400, // 24 hours in seconds
+    });
+
+    return response;
+
+  } catch (error: unknown) {
+    console.error("Login error:", error);
+    
+    if (error instanceof Error) {
+      // Handle specific MongoDB errors
+      if (error.message.includes('Cast to ObjectId failed')) {
+        return NextResponse.json(
+          { success: false, message: "Invalid user data" },
+          { status: 400 }
+        );
+      }
+      
+      return NextResponse.json(
+        { success: false, message: "Login failed. Please try again." },
+        { status: 500 }
+      );
+    }
+    
     return NextResponse.json(
-      { success: false, message: "Unknown error occurred" },
+      { success: false, message: "An unexpected error occurred" },
       { status: 500 }
     );
   }
