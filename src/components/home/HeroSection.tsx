@@ -36,7 +36,7 @@ export default function HeroSection() {
           />
         </div>
 
-        <div className={Styles.infocontainer}>
+        <div className={Styles.infoWrapper}>
           <div className={Styles.infoContainer}>
             <h2 className={Styles.cardSubtitle}>Organisations</h2>
             <h1 className="hero-text">124</h1>

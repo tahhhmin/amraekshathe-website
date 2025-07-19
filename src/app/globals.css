@@ -92,40 +92,35 @@ body {
 .highlight-hero-text {
     color: var(--color-primary);
 }
+@media (max-width: 600px) {
+    .hero-text {
+        font-size: 3rem;
+        line-height: 1.25;
+    }
+}
+/* Section title */ 
 h1 {
     font-family: var(--font-heading);
     font-size: var(--size-section-title);
     font-weight: var(--font-weight-medium);
     color: var(--color-text);
 }
-
+/* Card title */  /* Section Subtitle  */ 
 h2 {
-    font-family: var(--font-family);
+    font-family: var(--font-heading);
     font-size: var(--size-card-title);
     font-weight: var(--font-weight-medium);
     color: var(--color-text);
 }
-
+/* Card Subtitle  */ 
 h3 {
     font-family: var(--font-family);
-    font-size: var(--size-card-subtitle);
+    font-size: var(--size-body);
     font-weight: var(--font-weight-medium);
     color: var(--color-text);
 }
 
-h4 {
-  font-family: var(--font-family);
-  font-size: var(--size-card-subtitle);
-  font-weight: var(--font-weight-regular);
-  color: var(--color-text);
-}
 
-h5 {
-  font-family: var(--font-family);
-  font-size: var(--size-body);
-  font-weight: var(--font-weight-regular);
-  color: var(--color-text);
-}
 
 a {
   font-family: var(--font-family);

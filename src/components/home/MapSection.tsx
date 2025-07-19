@@ -83,7 +83,7 @@ export default function MapSection() {
           </div>
           <div className={Styles.mapInfo}>
             <div className={Styles.mapInfoDescription}>
-              <h1 className={Styles.mapInfoTitle}>Find Projects in Your Area</h1>
+              <h2 className={Styles.mapInfoTitle}>Find Projects in Your Area</h2>
               <h3 className={Styles.mapInfoSubtitle}>Join Thousands of volunteers making a difference</h3>
             </div>
             <div className={Styles.mapButton}>

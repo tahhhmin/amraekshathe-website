@@ -79,11 +79,12 @@
 }
 
 .dropdownMenu {
-    margin-top: 7px;
+    margin-top: 0px;
     position: fixed;
-    background: var(--color-card);
+    backdrop-filter: blur(50px);
+    z-index: 1000;
     border: 1px solid var(--color-border);
-    border-radius: 0 0 12px 12px;
+    border-radius: 12px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
     min-width: 200px;
     z-index: 9999;
