@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent } from "leaflet";
+import type { DivIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
@@ -25,7 +26,7 @@ function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [numbe
 
 function CustomMarker({ position }: { position: [number, number] }) {
   // Leaflet (L) must be imported dynamically only on client
-  const [L, setL] = useState<any>(null);
+  const [L, setL] = useState<typeof import("leaflet") | null>(null);
 
   useEffect(() => {
     import("leaflet").then((mod) => {
@@ -33,10 +34,10 @@ function CustomMarker({ position }: { position: [number, number] }) {
     });
   }, []);
 
-  // Wait until Leaflet is loaded
-  if (!L) return null;
-
-  const icon = useMemo(() => {
+  // Create the icon using useMemo, but only after L is loaded
+  const icon = useMemo((): DivIcon | null => {
+    if (!L) return null;
+    
     return L.divIcon({
       className: styles.customMarkerIcon,
       html: `
@@ -47,6 +48,9 @@ function CustomMarker({ position }: { position: [number, number] }) {
       `,
     });
   }, [L]);
+
+  // Wait until Leaflet is loaded and icon is created
+  if (!L || !icon) return null;
 
   return (
     <Marker position={position} icon={icon}>
