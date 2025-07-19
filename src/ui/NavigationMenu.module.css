@@ -167,12 +167,12 @@
 
 /* Active nav item styling */
 .activeNavItem .navText {
-  color: var(--color-orange);
-  font-weight: 600;
+    color: var(--color-primary);
+    font-weight: 600;
 }
 
 .navItem.activeNavItem:hover {
-  background-color: rgba(249, 115, 22, 0.1);
+    background-color: rgba(249, 115, 22, 0.1);
 }
 
 
