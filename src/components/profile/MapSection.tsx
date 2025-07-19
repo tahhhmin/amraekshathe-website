@@ -1,167 +1,177 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import Styles from './MapSection.module.css';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import Button from '@/ui/button/Button';
-import { LatLngTuple, LatLngExpression } from 'leaflet';
+import L from 'leaflet';
 
 type Project = {
-  id: number;
-  title: string;
-  organization: string;
-  volunteers: number;
-  maxVolunteers: number;
-  distance: string;
-  date: string;
-  category: string;
-  coordinates: LatLngTuple;
+  _id: string;
+  name: string;
+  location: {
+    type: 'Point';
+    coordinates: [number, number]; // [longitude, latitude]
+  };
 };
 
-const nearbyProjects: Project[] = [
-  {
-    id: 1,
-    title: 'Tree Plantation Drive',
-    organization: 'GreenWorld NGO',
-    volunteers: 12,
-    maxVolunteers: 20,
-    distance: '1.2 km',
-    date: 'July 20, 2025',
-    category: 'Environment',
-    coordinates: [23.8103, 90.4125],
-  },
-  {
-    id: 2,
-    title: 'Food Distribution',
-    organization: 'Help Dhaka',
-    volunteers: 5,
-    maxVolunteers: 10,
-    distance: '2.5 km',
-    date: 'July 22, 2025',
-    category: 'Relief',
-    coordinates: [23.8156, 90.425],
-  },
-];
+// Utility: Calculate distance between two lat/lng points using Haversine formula (in km)
+function getDistanceFromLatLonInKm(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+) {
+  const R = 6371; // Radius of the earth in km
+  const dLat = deg2rad(lat2 - lat1);
+  const dLon = deg2rad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(deg2rad(lat1)) *
+      Math.cos(deg2rad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const d = R * c; // Distance in km
+  return d;
+}
 
-function MapControls({ center }: { center: LatLngExpression }) {
+function deg2rad(deg: number) {
+  return deg * (Math.PI / 180);
+}
+
+function MapCenter({ center }: { center: [number, number] }) {
   const map = useMap();
-
   useEffect(() => {
     map.setView(center, 13);
   }, [center, map]);
-
   return null;
 }
 
-export default function MapSection() {
-  const [userLocation, setUserLocation] = useState<LatLngTuple>([23.8103, 90.4125]);
-  const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all');
+export default function MapNearbyProjectsSection() {
+  const [userLocation, setUserLocation] = useState<[number, number] | null>(null);
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [nearbyProjects, setNearbyProjects] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLocate = () => {
+  // Get user's current location
+  useEffect(() => {
     if (typeof window !== 'undefined' && navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (pos) =>
-          setUserLocation([
-            pos.coords.latitude,
-            pos.coords.longitude,
-          ] as LatLngTuple),
-        () => alert('Could not retrieve location')
+        (pos) => {
+          setUserLocation([pos.coords.latitude, pos.coords.longitude]);
+        },
+        (err) => {
+          setError('Could not retrieve your location');
+          setLoading(false);
+          console.error(err);
+        }
       );
+    } else {
+      setError('Geolocation not supported by your browser');
+      setLoading(false);
     }
-  };
+  }, []);
 
-  const filteredProjects = nearbyProjects.filter((project) => {
-    const matchSearch =
-      project.title.toLowerCase().includes(search.toLowerCase()) ||
-      project.organization.toLowerCase().includes(search.toLowerCase());
-    const matchFilter =
-      filter === 'all' || project.category.toLowerCase() === filter.toLowerCase();
-    return matchSearch && matchFilter;
-  });
+  // Fetch projects from API
+  useEffect(() => {
+    async function fetchProjects() {
+      try {
+        const res = await fetch('/api/projects/showprojectonmap');
+        const json = await res.json();
+
+        if (!json.success) {
+          setError(json.error || 'Failed to load projects');
+          setLoading(false);
+          return;
+        }
+
+        setProjects(json.data);
+      } catch (err) {
+        setError('Failed to load projects');
+        setLoading(false);
+      }
+    }
+    fetchProjects();
+  }, []);
+
+  // Calculate nearby projects within 10km after projects and user location are ready
+  useEffect(() => {
+    if (userLocation && projects.length > 0) {
+      const filtered = projects.filter((project) => {
+        const [lng, lat] = project.location.coordinates;
+        const dist = getDistanceFromLatLonInKm(
+          userLocation[0],
+          userLocation[1],
+          lat,
+          lng
+        );
+        return dist <= 10;
+      });
+      setNearbyProjects(filtered);
+      setLoading(false);
+    }
+  }, [userLocation, projects]);
+
+  if (loading) return <p>Loading map and projects...</p>;
+  if (error) return <p>Error: {error}</p>;
+  if (!userLocation) return <p>Waiting for location...</p>;
 
   return (
-    <section className={Styles.mapProjectsSection}>
-      <div className={Styles.mapControls}>
-        <input
-          type="text"
-          placeholder="Search by name or org..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className={Styles.searchInput}
-        />
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className={Styles.filterDropdown}
+    <div style={{ display: 'flex', gap: '1rem', height: '500px' }}>
+      {/* Map */}
+      <div style={{ flex: 2 }}>
+        <MapContainer
+          center={userLocation}
+          zoom={13}
+          style={{ height: '100%', width: '100%' }}
         >
-          <option value="all">All</option>
-          <option value="Environment">Environment</option>
-          <option value="Relief">Relief</option>
-        </select>
-        <button className={Styles.locateBtn} onClick={handleLocate}>
-          📍 Locate Me
-        </button>
+          <TileLayer
+            attribution='&copy; OpenStreetMap contributors'
+            url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
+          />
+          <MapCenter center={userLocation} />
+          {/* User location marker */}
+          <Marker position={userLocation}>
+            <Popup>Your location</Popup>
+          </Marker>
+
+          {/* Nearby projects markers */}
+          {nearbyProjects.map((project) => {
+            const [lng, lat] = project.location.coordinates;
+            return (
+              <Marker key={project._id} position={[lat, lng]}>
+                <Popup>{project.name}</Popup>
+              </Marker>
+            );
+          })}
+        </MapContainer>
       </div>
 
-      <div className={Styles.generateSection}>
-        <div className={Styles.leftColumn}>
-          <h2 className={Styles.sectionTitle}>Projects Near You</h2>
-          <div className={Styles.mapCard}>
-            <MapContainer
-              center={userLocation}
-              zoom={13}
-              scrollWheelZoom={false}
-              className={Styles.leafletMap}
-            >
-              <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-              <MapControls center={userLocation} />
-              {filteredProjects.map((project) => (
-                <Marker key={project.id} position={project.coordinates}>
-                  <Popup>
-                    <strong>{project.title}</strong>
-                    <br />
-                    {project.organization}
-                    <br />
-                    {project.volunteers}/{project.maxVolunteers} volunteers
-                  </Popup>
-                </Marker>
-              ))}
-            </MapContainer>
-            <div className={Styles.mapFooter}>
-              <span>Showing {filteredProjects.length} projects nearby</span>
-            </div>
-          </div>
-        </div>
-
-        <div className={Styles.rightColumn}>
-          <h2 className={Styles.sidebarTitle}>Available Projects</h2>
-          {filteredProjects.map((project) => (
-            <div key={project.id} className={Styles.projectCard}>
-              <div className={Styles.projectCardHeader}>
-                <h3 className={Styles.projectTitle}>{project.title}</h3>
-                <span className={Styles.projectBadge}>{project.category}</span>
-              </div>
-              <p className={Styles.projectOrg}>{project.organization}</p>
-              <div className={Styles.projectDetails}>
-                <p>{project.distance}</p>
-                <p>{project.date}</p>
-                <p>
-                  {project.volunteers}/{project.maxVolunteers}
-                </p>
-              </div>
-              <div className={Styles.projectButtons}>
-                <Button label="View" />
-                <Button label="Join" variant="outlined" />
-              </div>
-            </div>
+      {/* Sidebar with nearby projects */}
+      <div
+        style={{
+          flex: 1,
+          overflowY: 'auto',
+          border: '1px solid #ccc',
+          padding: '1rem',
+          borderRadius: '8px',
+        }}
+      >
+        <h2>Projects Within 10 km</h2>
+        {nearbyProjects.length === 0 && <p>No projects nearby.</p>}
+        <ul>
+          {nearbyProjects.map((project) => (
+            <li key={project._id} style={{ marginBottom: '1rem' }}>
+              <strong>{project.name}</strong>
+              <br />
+              Coordinates:{" "}
+              {project.location.coordinates[1].toFixed(5)},{" "}
+              {project.location.coordinates[0].toFixed(5)}
+            </li>
           ))}
-        </div>
+        </ul>
       </div>
-    </section>
+    </div>
   );
 }

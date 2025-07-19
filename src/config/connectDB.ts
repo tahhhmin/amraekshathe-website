@@ -1,4 +1,4 @@
-// /config/connectDB.ts
+// src/config/connectDB.ts
 
 import mongoose, { ConnectOptions } from "mongoose";
 
