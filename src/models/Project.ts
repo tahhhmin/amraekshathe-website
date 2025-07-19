@@ -1,9 +1,6 @@
-// src/models/Projects.ts
-
-
 import mongoose, { Schema } from "mongoose";
 
-// GeoJSON Location Schema
+// GeoJSON Location Schema for Points
 const LocationSchema = new Schema({
   type: {
     type: String,
@@ -13,10 +10,6 @@ const LocationSchema = new Schema({
   coordinates: {
     type: [Number], // [longitude, latitude]
     required: true,
-  },
-  address: {
-    type: String,
-    trim: true,
   },
 }, { _id: false });
 

@@ -1,15 +1,25 @@
-// src/app/api/projects/showprojectonmap/route.ts
-
 import { NextResponse } from "next/server";
 import { connectDB } from "@/config/connectDB";
-import Project from "@/models/Project"; // adjust path as needed
+import Project from "@/models/Project";
 
 export async function GET() {
   try {
     await connectDB();
 
-    // Fetch all projects, select only name and location fields
-    const projects = await Project.find({}, "name location").lean();
+    // Fetch projects with only name and location
+    const rawProjects = await Project.find({}, "name location").lean();
+
+    // Filter to ensure valid GeoJSON Point with coordinates
+    const projects = rawProjects.filter((project) => {
+      return (
+        project.location &&
+        project.location.type === "Point" &&
+        Array.isArray(project.location.coordinates) &&
+        project.location.coordinates.length === 2 &&
+        typeof project.location.coordinates[0] === "number" &&
+        typeof project.location.coordinates[1] === "number"
+      );
+    });
 
     return NextResponse.json({ success: true, data: projects });
   } catch (error: unknown) {

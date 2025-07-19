@@ -7,9 +7,9 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { name, coordinates, address } = body;
+    const { name, coordinates } = body;
 
-    // Basic validation
+    // Validate inputs
     if (
       typeof name !== "string" ||
       !Array.isArray(coordinates) ||
@@ -17,26 +17,24 @@ export async function POST(req: NextRequest) {
       !coordinates.every((coord) => typeof coord === "number")
     ) {
       return NextResponse.json(
-        { success: false, error: "Name and valid coordinates [latitude, longitude] are required." },
+        { success: false, error: "Name and valid coordinates [longitude, latitude] are required." },
         { status: 400 }
       );
     }
 
+    // Create new project document
     const newProject = await Project.create({
-      name,
+      name: name.trim(),
       location: {
         type: "Point",
         coordinates,
-        address: address || "",
       },
     });
 
     return NextResponse.json({ success: true, project: newProject }, { status: 201 });
-
   } catch (error: unknown) {
     console.error("Failed to create project:", error);
 
-    // Safe type guard for error
     let message = "Server error";
     if (
       typeof error === "object" &&

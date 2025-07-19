@@ -45,7 +45,7 @@ function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [numbe
 
 export default function AddProjectPage() {
   const [projectName, setProjectName] = useState("");
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null); // [lat, lng]
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -61,19 +61,22 @@ export default function AddProjectPage() {
     setLoading(true);
 
     try {
+      // Mongo expects GeoJSON coordinates in [lng, lat] order
+      const coordinates = [markerPosition[1], markerPosition[0]];
+
       const res = await fetch("/api/projects/add", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          name: projectName,
-          coordinates: markerPosition,
+          name: projectName.trim(),
+          coordinates,
         }),
       });
 
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to add project");
 
-      alert("Project added!");
+      alert("Project added successfully!");
       setProjectName("");
       setMarkerPosition(null);
     } catch (err) {
