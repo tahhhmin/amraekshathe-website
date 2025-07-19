@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { useMapEvents, Marker, Popup, TileLayer } from "react-leaflet";
+import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
+import type { LeafletMouseEvent } from "leaflet";
 import * as L from "leaflet";
+import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
-// Custom marker component using inline SVG icon styled by CSS
+// Dynamically import MapContainer to prevent SSR issues
+const MapContainer = dynamic(() => import("react-leaflet").then(mod => mod.MapContainer), {
+  ssr: false,
+});
+
+// Custom marker icon using inline SVG
 function CustomMarker({ position }: { position: [number, number] }) {
   const icon = L.divIcon({
     className: styles.customMarkerIcon,
@@ -25,10 +32,10 @@ function CustomMarker({ position }: { position: [number, number] }) {
   );
 }
 
+// Component to listen for map clicks and update marker position
 function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
   useMapEvents({
-    click(e) {
-      // Leaflet returns lat,lng so keep order consistent here as [lat, lng]
+    click(e: LeafletMouseEvent) {
       const { lat, lng } = e.latlng;
       setMarkerPosition([lat, lng]);
     },
@@ -36,15 +43,11 @@ function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [numbe
   return null;
 }
 
-const MapContainer = dynamic(() => import("react-leaflet").then((mod) => mod.MapContainer), {
-  ssr: false,
-});
-
-export default function AddProject() {
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
+export default function AddProjectPage() {
   const [projectName, setProjectName] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -54,8 +57,8 @@ export default function AddProject() {
       return;
     }
 
-    setLoading(true);
     setError("");
+    setLoading(true);
 
     try {
       const res = await fetch("/api/projects/add", {
@@ -63,23 +66,18 @@ export default function AddProject() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: projectName,
-          coordinates: markerPosition, // [lat, lng]
+          coordinates: markerPosition,
         }),
       });
 
       const data = await res.json();
-
       if (!res.ok) throw new Error(data.error || "Failed to add project");
 
       alert("Project added!");
       setProjectName("");
       setMarkerPosition(null);
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unexpected error occurred.");
-      }
+      setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
       setLoading(false);
     }
@@ -87,14 +85,15 @@ export default function AddProject() {
 
   return (
     <div className={styles.container}>
-      <h1>Add Project with Location</h1>
+      <h1>Add Project</h1>
       {error && <p className={styles.error}>{error}</p>}
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <input
           type="text"
-          placeholder="Project Name"
           value={projectName}
           onChange={(e) => setProjectName(e.target.value)}
+          placeholder="Project Name"
           required
           className={styles.input}
           disabled={loading}
@@ -113,17 +112,19 @@ export default function AddProject() {
           style={{ marginTop: "10px", backgroundColor: "#f0f0f0" }}
         />
 
-        <MapContainer
-          center={[23.8103, 90.4125]}
-          zoom={12}
-          style={{ height: "300px", width: "100%", marginTop: "10px" }}
-        >
-          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <LocationMarker setMarkerPosition={setMarkerPosition} />
-          {markerPosition && <CustomMarker position={markerPosition} />}
-        </MapContainer>
+        <div style={{ marginTop: "10px" }}>
+          <MapContainer
+            center={[23.8103, 90.4125]}
+            zoom={12}
+            style={{ height: "300px", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+            <LocationMarker setMarkerPosition={setMarkerPosition} />
+            {markerPosition && <CustomMarker position={markerPosition} />}
+          </MapContainer>
+        </div>
 
-        <button type="submit" disabled={loading} className={styles.button} style={{ marginTop: "10px" }}>
+        <button type="submit" className={styles.button} disabled={loading} style={{ marginTop: "10px" }}>
           {loading ? "Saving..." : "Add Project"}
         </button>
       </form>
