@@ -1,34 +1,32 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import dynamic from "next/dynamic";
 import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent } from "leaflet";
+import * as L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
 // Dynamically import MapContainer to prevent SSR issues
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
-  {
-    ssr: false,
-  }
+  { ssr: false }
 );
 
-// Custom marker icon using inline SVG and Leaflet icon creation only on client
 function CustomMarker({ position }: { position: [number, number] }) {
-  // Import Leaflet here to avoid SSR issues
-  const L = require("leaflet");
-
-  const icon = L.divIcon({
-    className: styles.customMarkerIcon,
-    html: `
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" viewBox="0 0 24 24" width="24" height="24">
-        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/>
-        <circle cx="12" cy="10" r="3"/>
-      </svg>
-    `,
-  });
+  // Use useMemo so icon is not recreated on every render
+  const icon = useMemo(() => {
+    return L.divIcon({
+      className: styles.customMarkerIcon,
+      html: `
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-map-pin" viewBox="0 0 24 24" width="24" height="24">
+          <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 1 1 18 0z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+      `,
+    });
+  }, []);
 
   return (
     <Marker position={position} icon={icon}>
@@ -37,7 +35,6 @@ function CustomMarker({ position }: { position: [number, number] }) {
   );
 }
 
-// Component to listen for map clicks and update marker position
 function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
   useMapEvents({
     click(e: LeafletMouseEvent) {
@@ -50,7 +47,7 @@ function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [numbe
 
 export default function AddProjectPage() {
   const [projectName, setProjectName] = useState("");
-  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null); // [lat, lng]
+  const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -66,7 +63,6 @@ export default function AddProjectPage() {
     setLoading(true);
 
     try {
-      // Mongo expects GeoJSON coordinates in [lng, lat] order
       const coordinates = [markerPosition[1], markerPosition[0]];
 
       const res = await fetch("/api/projects/add", {
@@ -117,15 +113,11 @@ export default function AddProjectPage() {
           }
           placeholder="Click on map to select coordinates"
           className={styles.input}
-          style={{ marginTop: "10px", backgroundColor: "#f0f0f0" }}
+          style={{ marginTop: 10, backgroundColor: "#f0f0f0" }}
         />
 
-        <div style={{ marginTop: "10px" }}>
-          <MapContainer
-            center={[23.8103, 90.4125]}
-            zoom={12}
-            style={{ height: "300px", width: "100%" }}
-          >
+        <div style={{ marginTop: 10 }}>
+          <MapContainer center={[23.8103, 90.4125]} zoom={12} style={{ height: 300, width: "100%" }}>
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <LocationMarker setMarkerPosition={setMarkerPosition} />
             {markerPosition && <CustomMarker position={markerPosition} />}
@@ -136,7 +128,7 @@ export default function AddProjectPage() {
           type="submit"
           className={styles.button}
           disabled={loading}
-          style={{ marginTop: "10px" }}
+          style={{ marginTop: 10 }}
         >
           {loading ? "Saving..." : "Add Project"}
         </button>
