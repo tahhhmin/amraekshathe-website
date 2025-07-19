@@ -1,22 +1,33 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  MapContainer,
-  TileLayer,
-  Tooltip,
-  Marker
-} from "react-leaflet";
-import L from "leaflet";
+import dynamic from "next/dynamic"; // Import dynamic
 import "leaflet/dist/leaflet.css";
 
-// Invisible icon to hide the marker but show tooltip only
-const invisibleIcon = new L.DivIcon({
-  html: "",
-  className: "invisible-marker",
-  iconSize: [0, 0],
-});
+// Dynamically import Leaflet and its components to prevent SSR issues
+const MapContainer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.MapContainer),
+  { ssr: false }
+);
 
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+
+const Tooltip = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Tooltip),
+  { ssr: false }
+);
+
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+
+// We need to dynamically import L as well, and use it inside a useEffect or a dynamic component
+// or ensure it's only accessed on the client-side.
+// For the invisibleIcon, we can define it conditionally or inside a useEffect.
 interface Project {
   _id: string;
   name: string;
@@ -26,11 +37,49 @@ interface Project {
   };
 }
 
+// Component to handle the invisible icon, ensuring L is available
+function InvisibleMarkerIcon() {
+  const [L, setL] = useState<typeof import("leaflet") | null>(null);
+
+  useEffect(() => {
+    import("leaflet").then((mod) => {
+      setL(mod);
+    });
+  }, []);
+
+  if (!L) return null; // Don't return the icon until L is loaded
+
+  return new L.DivIcon({
+    html: "",
+    className: "invisible-marker",
+    iconSize: [0, 0],
+  });
+}
+
+
 export default function ShowProjectsOnMap() {
   const [projects, setProjects] = useState<Project[]>([]);
   const center: [number, number] = [23.8103, 90.4125]; // Dhaka
+  const [isClient, setIsClient] = useState(false);
+  const [invisibleIcon, setInvisibleIcon] = useState<L.DivIcon | null>(null);
+
 
   useEffect(() => {
+    setIsClient(true);
+    // Dynamically create the invisible icon once client-side
+    import("leaflet").then((mod) => {
+      const L = mod;
+      setInvisibleIcon(new L.DivIcon({
+        html: "",
+        className: "invisible-marker",
+        iconSize: [0, 0],
+      }));
+    });
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return; // Only fetch on client-side
+
     fetch("/api/projects/showprojectonmap")
       .then((res) => res.json())
       .then((data) => {
@@ -42,7 +91,24 @@ export default function ShowProjectsOnMap() {
         }
       })
       .catch((err) => console.error("Fetch error:", err));
-  }, []);
+  }, [isClient]); // Depend on isClient to ensure it runs only on client
+
+
+  if (!isClient || !invisibleIcon) {
+    return (
+      <div style={{
+        height: "80vh",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#f0f0f0",
+        border: "1px solid #ccc"
+      }}>
+        Loading map...
+      </div>
+    );
+  }
 
   return (
     <div style={{ height: "80vh", width: "100%" }}>
