@@ -2,30 +2,62 @@
 
 import { useState, useMemo, useEffect } from "react";
 import dynamic from "next/dynamic";
-import { Marker, Popup, TileLayer, useMapEvents } from "react-leaflet";
 import type { LeafletMouseEvent } from "leaflet";
 import type { DivIcon } from "leaflet";
 import "leaflet/dist/leaflet.css";
 import styles from "./page.module.css";
 
-// Dynamically import MapContainer to prevent SSR issues
+// Dynamically import all Leaflet components to prevent SSR issues
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false }
 );
 
+const TileLayer = dynamic(
+  () => import("react-leaflet").then((mod) => mod.TileLayer),
+  { ssr: false }
+);
+
+const Marker = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Marker),
+  { ssr: false }
+);
+
+const Popup = dynamic(
+  () => import("react-leaflet").then((mod) => mod.Popup),
+  { ssr: false }
+);
+
+// Create a wrapper component for useMapEvents hook
 function LocationMarker({ setMarkerPosition }: { setMarkerPosition: (pos: [number, number]) => void }) {
-  useMapEvents({
-    click(e: LeafletMouseEvent) {
-      const { lat, lng } = e.latlng;
-      setMarkerPosition([lat, lng]);
-    },
-  });
-  return null;
+  const [isReady, setIsReady] = useState(false);
+
+  useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady) return null;
+
+  // This component will use the hook once it's rendered client-side
+  const MapEventsHandler = dynamic(
+    () => Promise.resolve(() => {
+      const { useMapEvents } = require("react-leaflet");
+      
+      useMapEvents({
+        click(e: LeafletMouseEvent) {
+          const { lat, lng } = e.latlng;
+          setMarkerPosition([lat, lng]);
+        },
+      });
+      return null;
+    }),
+    { ssr: false }
+  );
+
+  return <MapEventsHandler />;
 }
 
 function CustomMarker({ position }: { position: [number, number] }) {
-  // Leaflet (L) must be imported dynamically only on client
   const [L, setL] = useState<typeof import("leaflet") | null>(null);
 
   useEffect(() => {
@@ -34,7 +66,6 @@ function CustomMarker({ position }: { position: [number, number] }) {
     });
   }, []);
 
-  // Create the icon using useMemo, but only after L is loaded
   const icon = useMemo((): DivIcon | null => {
     if (!L) return null;
     
@@ -49,7 +80,6 @@ function CustomMarker({ position }: { position: [number, number] }) {
     });
   }, [L]);
 
-  // Wait until Leaflet is loaded and icon is created
   if (!L || !icon) return null;
 
   return (
@@ -59,11 +89,59 @@ function CustomMarker({ position }: { position: [number, number] }) {
   );
 }
 
+// Main map component that loads everything dynamically
+function MapComponent({ 
+  markerPosition, 
+  setMarkerPosition 
+}: { 
+  markerPosition: [number, number] | null;
+  setMarkerPosition: (pos: [number, number]) => void;
+}) {
+  const [isLoaded, setIsLoaded] = useState(false);
+
+  useEffect(() => {
+    setIsLoaded(true);
+  }, []);
+
+  if (!isLoaded) {
+    return (
+      <div style={{ 
+        height: 300, 
+        width: "100%", 
+        display: "flex", 
+        alignItems: "center", 
+        justifyContent: "center",
+        backgroundColor: "#f0f0f0",
+        border: "1px solid #ccc"
+      }}>
+        Loading map...
+      </div>
+    );
+  }
+
+  return (
+    <MapContainer
+      center={[23.8103, 90.4125]}
+      zoom={12}
+      style={{ height: 300, width: "100%" }}
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <LocationMarker setMarkerPosition={setMarkerPosition} />
+      {markerPosition && <CustomMarker position={markerPosition} />}
+    </MapContainer>
+  );
+}
+
 export default function AddProjectPage() {
   const [projectName, setProjectName] = useState("");
   const [markerPosition, setMarkerPosition] = useState<[number, number] | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -131,15 +209,24 @@ export default function AddProjectPage() {
         />
 
         <div style={{ marginTop: 10 }}>
-          <MapContainer
-            center={[23.8103, 90.4125]}
-            zoom={12}
-            style={{ height: 300, width: "100%" }}
-          >
-            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-            <LocationMarker setMarkerPosition={setMarkerPosition} />
-            {markerPosition && <CustomMarker position={markerPosition} />}
-          </MapContainer>
+          {isClient ? (
+            <MapComponent 
+              markerPosition={markerPosition} 
+              setMarkerPosition={setMarkerPosition} 
+            />
+          ) : (
+            <div style={{ 
+              height: 300, 
+              width: "100%", 
+              display: "flex", 
+              alignItems: "center", 
+              justifyContent: "center",
+              backgroundColor: "#f0f0f0",
+              border: "1px solid #ccc"
+            }}>
+              Loading map...
+            </div>
+          )}
         </div>
 
         <button
