@@ -7,7 +7,6 @@ import 'leaflet/dist/leaflet.css';
 import Button from '@/ui/button/Button';
 import { LatLngTuple, LatLngExpression } from 'leaflet';
 
-// Type definition for a project
 type Project = {
   id: number;
   title: string;
@@ -17,10 +16,9 @@ type Project = {
   distance: string;
   date: string;
   category: string;
-  coordinates: LatLngTuple; // Type enforced here
+  coordinates: LatLngTuple;
 };
 
-// Sample nearby projects
 const nearbyProjects: Project[] = [
   {
     id: 1,
@@ -42,11 +40,10 @@ const nearbyProjects: Project[] = [
     distance: '2.5 km',
     date: 'July 22, 2025',
     category: 'Relief',
-    coordinates: [23.8156, 90.4250],
+    coordinates: [23.8156, 90.425],
   },
 ];
 
-// Map centering helper
 function MapControls({ center }: { center: LatLngExpression }) {
   const map = useMap();
 
@@ -62,19 +59,19 @@ export default function MapSection() {
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState('all');
 
-  // Handle geolocation
   const handleLocate = () => {
-    navigator.geolocation.getCurrentPosition(
-      (pos) =>
-        setUserLocation([
-          pos.coords.latitude,
-          pos.coords.longitude,
-        ] as LatLngTuple),
-      () => alert('Could not retrieve location')
-    );
+    if (typeof window !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) =>
+          setUserLocation([
+            pos.coords.latitude,
+            pos.coords.longitude,
+          ] as LatLngTuple),
+        () => alert('Could not retrieve location')
+      );
+    }
   };
 
-  // Filtered project list
   const filteredProjects = nearbyProjects.filter((project) => {
     const matchSearch =
       project.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -109,7 +106,6 @@ export default function MapSection() {
       </div>
 
       <div className={Styles.generateSection}>
-        {/* LEFT COLUMN: Map */}
         <div className={Styles.leftColumn}>
           <h2 className={Styles.sectionTitle}>Projects Near You</h2>
           <div className={Styles.mapCard}>
@@ -125,10 +121,7 @@ export default function MapSection() {
               />
               <MapControls center={userLocation} />
               {filteredProjects.map((project) => (
-                <Marker
-                  key={project.id}
-                  position={project.coordinates}
-                >
+                <Marker key={project.id} position={project.coordinates}>
                   <Popup>
                     <strong>{project.title}</strong>
                     <br />
@@ -145,7 +138,6 @@ export default function MapSection() {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: List of Projects */}
         <div className={Styles.rightColumn}>
           <h2 className={Styles.sidebarTitle}>Available Projects</h2>
           {filteredProjects.map((project) => (
