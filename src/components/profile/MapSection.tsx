@@ -60,11 +60,9 @@ export default function MapNearbyProjectsSection() {
         (pos) => {
           setUserLocation([pos.coords.latitude, pos.coords.longitude]);
         },
-        (_err) => {
+        () => {
           setError('Could not retrieve your location');
           setLoading(false);
-          // You can uncomment below if you want console logging:
-          // console.error(_err);
         }
       );
     } else {
@@ -131,6 +129,7 @@ export default function MapNearbyProjectsSection() {
             url='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'
           />
           <MapCenter center={userLocation} />
+
           {/* User location marker */}
           <Marker position={userLocation}>
             <Popup>Your location</Popup>
