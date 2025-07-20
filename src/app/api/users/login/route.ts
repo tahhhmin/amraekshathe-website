@@ -1,4 +1,4 @@
-// /api/users/login/route.ts
+// api/users/login/route.ts
 
 import { connectDB } from "@/config/connectDB";
 import { NextRequest, NextResponse } from "next/server";
@@ -65,13 +65,13 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Create JWT token
+    // Create JWT token - IMPORTANT: Added userType to the payload
     const token = jwt.sign(
       { 
         id: user._id.toString(),
         email: user.email,
         username: user.username,
-        userType: user.userType
+        userType: "user" // Explicitly set user type for volunteers
       },
       jwtSecret,
       { expiresIn: "24h" }
@@ -86,7 +86,7 @@ export async function POST(req: NextRequest) {
         email: user.email,
         username: user.username,
         name: user.name,
-        userType: user.userType
+        userType: "user" // Also return userType in the response body
       }
     });
 

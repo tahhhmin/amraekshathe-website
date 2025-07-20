@@ -1,16 +1,18 @@
+// components/login/LoginUser.tsx
+
 "use client";
 
 import { useState } from "react";
 import Input from "@/ui/input/Input";
 import Button from "@/ui/button/Button";
 import Styles from "../../app/login-signup/page.module.css"; // Assuming Styles are common
-import { NextRouter } from "next/router"; // Import NextRouter for type checking
+import { useRouter } from "next/navigation"; // Import useRouter directly
 
 interface LoginUserProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   showMessage: (type: "success" | "error", text: string) => void;
-  router: NextRouter; // Pass router as prop
+  router: ReturnType<typeof useRouter>; // Correct type for useRouter hook
   setEmail: (email: string) => void;
   currentEmail: string;
   setMode: (mode: "signup" | "verify" | "login") => void;
@@ -29,7 +31,7 @@ export default function LoginUser({
 
   async function handleLogin() {
     if (!email || !password) {
-      showMessage("error", "Please enter email and password");
+      showMessage("error", "Please enter email and password.");
       return;
     }
 
@@ -38,7 +40,7 @@ export default function LoginUser({
       const loginPayload = {
         email: email.trim(),
         password,
-        loginType: "volunteer",
+        loginType: "volunteer", // This is for your internal tracking if needed
       };
 
       const res = await fetch("/api/users/login", {
@@ -50,12 +52,12 @@ export default function LoginUser({
       const data = await res.json();
 
       if (data.success) {
-        showMessage("success", "Login successful! Redirecting...");
+        showMessage("success", "Login successful! Redirecting to volunteer profile...");
         setTimeout(() => {
           router.push("/user/profile");
         }, 1000);
       } else {
-        showMessage("error", data.message || "Login failed");
+        showMessage("error", data.message || "Login failed.");
       }
     } catch (e) {
       showMessage("error", "Login failed: " + (e instanceof Error ? e.message : String(e)));

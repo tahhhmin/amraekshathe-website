@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Styles from "./page.module.css"; // Assuming Styles are common
-import SignIn from "@/components/login/Signup";
+import Styles from "./page.module.css";
+import SignIn from "@/components/login/Signup"; // This is for Volunteer Signup/Verify
 import LoginUser from "@/components/login/LoginUser";
 import LoginOrganization from "@/components/login/LoginOrganization";
-import Button from "@/ui/button/Button"; // Assuming Button is a shared UI component
+import SignupOrganization from "@/components/login/SignupOrganisation"; // Import the new component
+import Button from "@/ui/button/Button";
 
 // Define the location type with optional address property
 export type LocationType = {
@@ -21,7 +22,9 @@ export default function AuthPage() {
   const [mode, setMode] = useState<"signup" | "verify" | "login">("signup");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-  const [loginType, setLoginType] = useState<"volunteer" | "organization">("volunteer"); // Default to volunteer
+  
+  // State to determine which type of signup/login is active
+  const [userTypeSelected, setUserTypeSelected] = useState<"volunteer" | "organization">("volunteer"); // Default to volunteer
 
   // Common email state for verification and login after signup
   const [email, setEmail] = useState("");
@@ -36,7 +39,7 @@ export default function AuthPage() {
     loading,
     setLoading,
     showMessage,
-    setEmail, // Pass setEmail for SignIn to update email state for verification
+    setEmail, // Pass setEmail for signup components to update email state for verification
     currentEmail: email, // Pass current email to children
     setMode, // To switch modes
   };
@@ -51,7 +54,7 @@ export default function AuthPage() {
               {mode === "login"
                 ? "Welcome back! Please sign in to your account"
                 : mode === "verify"
-                ? "Please enter the verification code sent to your email"
+                ? `Please enter the verification code sent to your email (${email})`
                 : "Create your account to get started"}
             </p>
           </div>
@@ -82,52 +85,59 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* Render components based on mode */}
-        {mode === "signup" && (
-          <SignIn
-            {...commonProps}
-          />
+        {/* User Type Selection for Signup and Login */}
+        <div className={Styles.loginTabs}>
+          <button
+            className={`${Styles.tabButton} ${userTypeSelected === "volunteer" ? Styles.activeTab : ""}`}
+            onClick={() => {
+              setUserTypeSelected("volunteer");
+              // When switching type, if in signup/verify mode, reset to signup
+              if (mode !== "login") setMode("signup");
+            }}
+            disabled={loading}
+            type="button"
+          >
+            Volunteer
+          </button>
+          <button
+            className={`${Styles.tabButton} ${userTypeSelected === "organization" ? Styles.activeTab : ""}`}
+            onClick={() => {
+              setUserTypeSelected("organization");
+              // When switching type, if in signup/verify mode, reset to signup
+              if (mode !== "login") setMode("signup");
+            }}
+            disabled={loading}
+            type="button"
+          >
+            Organization
+          </button>
+        </div>
+
+        {/* Render components based on mode and selected user type */}
+        {mode === "signup" && userTypeSelected === "volunteer" && (
+          <SignIn {...commonProps} />
         )}
 
-        {mode === "verify" && (
-          <SignIn // Re-using SignIn for verification flow as it handles both
-            {...commonProps}
-          />
+        {mode === "signup" && userTypeSelected === "organization" && (
+          <SignupOrganization {...commonProps} />
         )}
 
-        {mode === "login" && (
-          <>
-            <div className={Styles.loginTabs}>
-              <button
-                className={`${Styles.tabButton} ${loginType === "volunteer" ? Styles.activeTab : ""}`}
-                onClick={() => setLoginType("volunteer")}
-                disabled={loading}
-                type="button"
-              >
-                Volunteer
-              </button>
-              <button
-                className={`${Styles.tabButton} ${loginType === "organization" ? Styles.activeTab : ""}`}
-                onClick={() => setLoginType("organization")}
-                disabled={loading}
-                type="button"
-              >
-                Organization
-              </button>
-            </div>
+        {mode === "verify" && userTypeSelected === "volunteer" && (
+          // Re-using SignIn for volunteer verification flow
+          <SignIn {...commonProps} />
+        )}
 
-            {loginType === "volunteer" ? (
-              <LoginUser
-                {...commonProps}
-                router={router}
-              />
-            ) : (
-              <LoginOrganization
-                {...commonProps}
-                router={router}
-              />
-            )}
-          </>
+        {mode === "verify" && userTypeSelected === "organization" && (
+          // Re-using SignupOrganization for organization verification flow
+          <SignupOrganization {...commonProps} />
+        )}
+
+        {mode === "login" && userTypeSelected === "volunteer" && (
+          <LoginUser {...commonProps} router={router} />
+        )}
+
+        {mode === "login" && userTypeSelected === "organization" && (
+          <LoginOrganization {...commonProps} router={router} />
         )}
 
         {/* Switch Mode Text */}

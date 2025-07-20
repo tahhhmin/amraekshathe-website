@@ -1,16 +1,18 @@
+// components/login/LoginOrganization.tsx
+
 "use client";
 
 import { useState } from "react";
 import Input from "@/ui/input/Input";
 import Button from "@/ui/button/Button";
 import Styles from "../../app/login-signup/page.module.css"; // Assuming Styles are common
-import { NextRouter } from "next/router"; // Import NextRouter for type checking
+import { useRouter } from "next/navigation"; // Import useRouter directly
 
 interface LoginOrganizationProps {
   loading: boolean;
   setLoading: (loading: boolean) => void;
   showMessage: (type: "success" | "error", text: string) => void;
-  router: NextRouter; // Pass router as prop
+  router: ReturnType<typeof useRouter>; // Correct type for useRouter hook
   setEmail: (email: string) => void;
   currentEmail: string;
   setMode: (mode: "signup" | "verify" | "login") => void;
@@ -26,25 +28,13 @@ export default function LoginOrganization({
 }: LoginOrganizationProps) {
   const [email, setLocalEmail] = useState(currentEmail);
   const [password, setPassword] = useState("");
-  const [organizationName, setOrganizationName] = useState("");
-  const [registrationNumber, setRegistrationNumber] = useState("");
-
-  // Client-side validation for Organization Login
-  function validateOrganizationLogin(): boolean {
-    if (!organizationName || !registrationNumber) {
-      showMessage("error", "Please fill in all required organization fields.");
-      return false;
-    }
-    return true;
-  }
+  // Removed organizationName and contactPerson from login form
+  // as they are not typically used for login credentials, only email/password.
+  // The simplified model also doesn't have registrationNumber for login.
 
   async function handleLogin() {
     if (!email || !password) {
-      showMessage("error", "Please enter email and password");
-      return;
-    }
-
-    if (!validateOrganizationLogin()) {
+      showMessage("error", "Please enter email and password.");
       return;
     }
 
@@ -53,12 +43,10 @@ export default function LoginOrganization({
       const loginPayload = {
         email: email.trim(),
         password,
-        loginType: "organization",
-        organizationName: organizationName.trim(),
-        registrationNumber: registrationNumber.trim(),
       };
 
-      const res = await fetch("/api/users/login", {
+      // *** IMPORTANT CHANGE: Target the organization login API ***
+      const res = await fetch("/api/organizations/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(loginPayload),
@@ -67,12 +55,12 @@ export default function LoginOrganization({
       const data = await res.json();
 
       if (data.success) {
-        showMessage("success", "Login successful! Redirecting...");
+        showMessage("success", "Login successful! Redirecting to organization dashboard...");
         setTimeout(() => {
-          router.push("/organization/dashboard");
+          router.push("/organization/dashboard"); // Redirect to organization profile page
         }, 1000);
       } else {
-        showMessage("error", data.message || "Login failed");
+        showMessage("error", data.message || "Login failed.");
       }
     } catch (e) {
       showMessage("error", "Login failed: " + (e instanceof Error ? e.message : String(e)));
@@ -92,38 +80,16 @@ export default function LoginOrganization({
           setLocalEmail(e.target.value);
           setEmail(e.target.value); // Update parent's email state
         }}
-        placeholder="Enter your email address"
+        placeholder="Enter your organization's email address"
         showIcon
         icon="Mail"
         disabled={loading}
         required
       />
 
-      <Input
-        label="Organization Name *"
-        name="organizationName"
-        type="text"
-        value={organizationName}
-        onChange={(e) => setOrganizationName(e.target.value)}
-        placeholder="Enter your organization's name"
-        showIcon
-        icon="Building" // Example icon for organization
-        disabled={loading}
-        required
-      />
-
-      <Input
-        label="Registration Number *"
-        name="registrationNumber"
-        type="text"
-        value={registrationNumber}
-        onChange={(e) => setRegistrationNumber(e.target.value)}
-        placeholder="Enter organization's registration number"
-        showIcon
-        icon="FileText" // Example icon for registration
-        disabled={loading}
-        required
-      />
+      {/* Removed Organization Name and Registration Number from login form */}
+      {/* because they are not part of the login credentials for the simplified model */}
+      {/* and are not typically used for authentication. */}
 
       <Input
         label="Password *"
