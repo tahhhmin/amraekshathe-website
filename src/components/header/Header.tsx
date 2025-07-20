@@ -52,6 +52,12 @@ const navItems: NavItem[] = [
     ],
   },
   {
+    name: 'Map',
+    path: '/map',
+    hasDropdown: false,
+
+  },
+  {
     name: 'Contact',
     path: '/contact',
     hasDropdown: true,

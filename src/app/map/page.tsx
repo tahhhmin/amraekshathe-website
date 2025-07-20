@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic"; // Import dynamic
 import "leaflet/dist/leaflet.css";
+import Styles from './page.module.css'
 
 // Dynamically import Leaflet and its components to prevent SSR issues
 const MapContainer = dynamic(
@@ -111,7 +112,7 @@ export default function ShowProjectsOnMap() {
   }
 
   return (
-    <div style={{ height: "80vh", width: "100%" }}>
+    <div className={Styles.container}>
       <MapContainer center={center} zoom={7} style={{ height: "100%", width: "100%" }}>
         <TileLayer
           attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a>'

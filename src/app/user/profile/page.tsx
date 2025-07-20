@@ -8,7 +8,7 @@ import Button from "@/ui/button/Button";
 import Image from "next/image";
 import dynamic from "next/dynamic";
 
-import LogoDark from '../../../public/amraekshathe-dark-icon.svg';
+import LogoDark from '../../../../public/amraekshathe-dark-icon.svg';
 import LogoutButton from "@/components/buttons/LogoutButton";
 
 const MapSection = dynamic(() => import("@/components/profile/MapSection"), {

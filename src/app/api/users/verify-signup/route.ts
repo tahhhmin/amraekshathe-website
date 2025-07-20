@@ -124,7 +124,7 @@ export async function POST(req: NextRequest) {
         username: user.username,
         name: user.name,
         isVerified: user.isVerified,
-        userType: user.userType,
+
       }
     });
 

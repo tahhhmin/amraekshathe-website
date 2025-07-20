@@ -7,6 +7,13 @@ const LocationSchema = new Schema({
     enum: ["Point"],
     default: "Point",
   },
+
+
+
+
+    lastPaid: {type: Date, },
+
+
   coordinates: {
     type: [Number], // [longitude, latitude]
     required: true,
@@ -37,11 +44,7 @@ const organisationSchema = new mongoose.Schema({
     min: 1800,
     max: new Date().getFullYear(),
   },
-  orgSize: {
-    type: String,
-    enum: ["Small", "Medium", "Large"],
-    default: "Small"
-  },
+
 
   // === Contact & Communication ===
   email: {
@@ -51,11 +54,11 @@ const organisationSchema = new mongoose.Schema({
     lowercase: true,
     trim: true,
   },
-  alternateEmail: { type: String, trim: true },
+
   phone: { type: String, trim: true },
-  alternatePhone: { type: String, trim: true },
+
   officeHours: { type: String, trim: true },
-  allowLiveChat: { type: Boolean, default: false },
+
 
   // === Location ===
   address: {
@@ -107,13 +110,10 @@ const organisationSchema = new mongoose.Schema({
 
 
   // === Projects ===
-  totalProjects: { type: Number, default: 0 },
-  projects: [{ type: mongoose.Schema.Types.ObjectId, ref: "Project" }],
-  projectCategories: { type: [String], default: [] },
+
 
   // === Volunteers ===
-  totalVolunteers: { type: Number, default: 0 },
-  volunteers: [{ type: mongoose.Schema.Types.ObjectId, ref: "Volunteer" }],
+
   needsVolunteers: { type: Boolean, default: false },
   volunteerSignupLink: { type: String, trim: true },
   volunteerCustomQuestions: { type: [String], default: [] },

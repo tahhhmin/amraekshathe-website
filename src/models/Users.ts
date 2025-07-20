@@ -92,12 +92,7 @@ const userSchema = new mongoose.Schema({
 
   // Organisation and volunteer data
   organisations: { type: [OrganisationMembershipSchema], default: [] },
-  userType: {
-    type: String,
-    enum: ["volunteer", "organisation"],
-    required: true,
-    default: "volunteer",
-  },
+
   dateJoined: { type: Date, default: Date.now },
   totalHoursVolunteered: { type: Number, default: 0, min: 0 },
   totalProjectsJoined: { type: Number, default: 0, min: 0 },

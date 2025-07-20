@@ -9,7 +9,7 @@ import bcrypt from "bcryptjs";
 
 // Type definitions
 type Gender = "male" | "female" | "other";
-type UserType = "volunteer" | "organisation";
+
 
 interface GeoJSONPoint {
   type: "Point";
@@ -28,7 +28,7 @@ interface SignupRequestBody {
   educationLevel: string;
   address: string;
   location?: GeoJSONPoint;
-  userType?: UserType;
+
 }
 
 interface UserData {
@@ -44,7 +44,7 @@ interface UserData {
   verifyToken: string;
   verifyTokenExpiry: Date;
   password: string;
-  userType: UserType;
+
   isVerified: boolean;
   isAdmin: boolean;
   dateJoined: Date;
@@ -62,9 +62,7 @@ function isValidGender(g: unknown): g is Gender {
   return typeof g === "string" && ["male", "female", "other"].includes(g);
 }
 
-function isValidUserType(t: unknown): t is UserType {
-  return typeof t === "string" && ["volunteer", "organisation"].includes(t);
-}
+
 
 function isValidLocation(loc: unknown): loc is GeoJSONPoint {
   if (!loc || typeof loc !== "object") return false;
@@ -115,7 +113,7 @@ export async function POST(req: NextRequest) {
       educationLevel,
       address,
       location,
-      userType = "volunteer", // Default to volunteer
+
     } = requestBody;
 
     // Validate all required fields
@@ -178,12 +176,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Validate user type
-    if (!isValidUserType(userType)) {
-      return NextResponse.json(
-        { success: false, message: "User type must be volunteer or organisation." },
-        { status: 400 }
-      );
-    }
+
 
     // Validate date of birth
     const birthDate = new Date(dateOfBirth);
@@ -257,7 +250,7 @@ export async function POST(req: NextRequest) {
       verifyToken: code,
       verifyTokenExpiry: expiry,
       password: hashedPassword,
-      userType,
+
       isVerified: false,
       isAdmin: false,
       dateJoined: new Date(),
@@ -294,7 +287,7 @@ export async function POST(req: NextRequest) {
         email: newUser.email,
         username: newUser.username,
         name: newUser.name,
-        userType: newUser.userType,
+
         isVerified: newUser.isVerified,
       }
     });

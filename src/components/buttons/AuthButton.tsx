@@ -24,7 +24,7 @@ export default function AuthButton() {
   }, []);
 
   const handleClick = () => {
-    router.push(isLoggedIn ? "/profile" : "/login-signup");
+    router.push(isLoggedIn ? "/user/profile" : "/login-signup");
   };
 
 
