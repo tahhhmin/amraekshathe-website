@@ -44,7 +44,7 @@ export async function sendEmail(type: string, data: EmailData): Promise<void> {
     });
 
     const mailOptions = {
-      from: `"Hashi Ekshathe" <${process.env.SMTP_USER}>`,
+      from: `"Amra Ekshathe" <${process.env.SMTP_USER}>`,
       to: data.to,
       subject,
       html,

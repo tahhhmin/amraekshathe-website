@@ -64,7 +64,7 @@ export default function AuthButton() {
       if (userType === "user") {
         router.push("/user/profile");
       } else if (userType === "organization") {
-        router.push("/organization/dashboard");
+        router.push("/organizations/dashboard");
       } else {
         // Fallback for unexpected userType or if something went wrong
         router.push("/"); // Redirect to home or a generic dashboard

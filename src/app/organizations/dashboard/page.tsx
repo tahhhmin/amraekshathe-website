@@ -198,7 +198,7 @@ export default function OrganizationDashboardPage() {
         {/* Add action buttons/links specific to organizations, e.g., "Post New Project", "Manage Applications" */}
         <div className={Styles.userStats}>
           {/* Example: A button to post a new project */}
-          <Link href="/organization/post-project">
+          <Link href="/organizations/dashboard/create-project">
             <div className={Styles.infoContainer}>
               <UserPen /> {/* Consider a more appropriate icon like 'PlusCircle' or 'Megaphone' */}
               <p className="muted-text">Post New Project</p>

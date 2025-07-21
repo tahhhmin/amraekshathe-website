@@ -24,12 +24,12 @@ const navItems: NavItem[] = [
     ],
   },
   {
-    name: 'Organisations',
-    path: '/records',
+    name: 'Organizations',
+    path: '/organizations',
     hasDropdown: true,
     dropdownItems: [
-      { name: 'View all organisations', path: '/organisations', description: 'See how your contributions are making a difference.' },
-      { name: 'Register', path: '/organisation/register', description: 'Review how we allocate funds for complete transparency.' },
+      { name: 'View all organizations', path: '/organizations', description: 'See how your contributions are making a difference.' },
+      { name: 'Register', path: '/organizations/register', description: 'Review how we allocate funds for complete transparency.' },
     ],
   },
   {

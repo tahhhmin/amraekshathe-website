@@ -57,7 +57,7 @@ export default function LoginOrganization({
       if (data.success) {
         showMessage("success", "Login successful! Redirecting to organization dashboard...");
         setTimeout(() => {
-          router.push("/organization/dashboard"); // Redirect to organization profile page
+          router.push("/organizations/dashboard"); // Redirect to organization profile page
         }, 1000);
       } else {
         showMessage("error", data.message || "Login failed.");
