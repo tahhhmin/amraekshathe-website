@@ -1,20 +1,31 @@
 // src/app/organizations/[slug]/page.tsx
 import { connectDB } from "@/config/connectDB";
-import Organization, { IOrganization } from "@/models/Organisation";
+import Organization from "@/models/Organisation";
 import styles from "./organisationDetailPage.module.css";
 import { notFound } from "next/navigation";
-import Image from "next/image"; // Assuming you use Next.js Image component
+import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Globe, CalendarDays, Tag } from 'lucide-react'; // Assuming these icons exist
+import { Mail, Phone, MapPin, Globe, CalendarDays, Tag } from 'lucide-react';
 
-interface OrganizationDetailPageProps {
-    params: {
-        slug: string;
-    };
+// Define the shape of the parameters for this dynamic route
+interface OrganizationPageParams {
+    slug: string;
 }
 
-export async function generateMetadata({ params }: OrganizationDetailPageProps) {
-    const slug = params.slug; // Access slug directly
+// Type for the Page component's props
+interface OrganizationDetailPageProps {
+    params: OrganizationPageParams;
+}
+
+// Type for generateMetadata function's props
+// It takes an object with `params` and optionally `searchParams`
+interface GenerateMetadataProps {
+    params: OrganizationPageParams;
+    // searchParams?: { [key: string]: string | string[] | undefined }; // Uncomment if you need search params
+}
+
+export async function generateMetadata({ params }: GenerateMetadataProps) {
+    const slug = params.slug;
     await connectDB();
     const org = await Organization.findOne({ slug });
 
@@ -26,20 +37,16 @@ export async function generateMetadata({ params }: OrganizationDetailPageProps) 
 
     return {
         title: org.organizationName,
-        description: org.shortDescription || "Details about this organization.", // Fallback for shortDescription
-        // Add other metadata as needed
+        description: org.shortDescription || "Details about this organization.",
     };
 }
 
-// Ensure dynamic rendering to allow async operations in Page
-export const dynamic = 'force-dynamic'; // Or 'auto' if you prefer static generation with revalidation
+export const dynamic = 'force-dynamic';
 
 export default async function OrganizationDetailPage({ params }: OrganizationDetailPageProps) {
     const { slug } = params;
 
     if (!slug) {
-        // This case should ideally be caught by Next.js's routing,
-        // but explicit check adds robustness.
         notFound();
     }
 
@@ -47,22 +54,21 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
     const org = await Organization.findOne({ slug });
 
     if (!org) {
-        notFound(); // Renders Next.js's not-found page
+        notFound();
     }
 
-    // Prepare data for rendering, ensuring no 'undefined' for string props
     const orgDetails = {
         organizationName: org.organizationName,
-        shortDescription: org.shortDescription || "", // Provide empty string fallback
-        description: org.description || "",           // Provide empty string fallback
-        imageUrl: org.imageUrl || "/default-org-logo.png", // Provide default image fallback
+        shortDescription: org.shortDescription || "",
+        description: org.description || "",
+        imageUrl: org.imageUrl || "/default-org-logo.png",
         contactPerson: org.contactPerson,
         phoneNumber: org.phoneNumber,
         address: org.address,
         email: org.email,
-        website: org.website || "", // Fallback for optional website field
-        category: org.category || "", // Fallback for optional category field
-        tags: org.tags || [], // Fallback for optional tags array
+        website: org.website || "",
+        category: org.category || "",
+        tags: org.tags || [],
         dateJoined: org.dateJoined.toLocaleDateString(),
     };
 
@@ -75,11 +81,9 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                     width={150}
                     height={150}
                     className={styles.logo}
-                    // Consider objectFit if you need to control image scaling within the container
-                    // objectFit="cover"
                 />
                 <h1>{orgDetails.organizationName}</h1>
-                {orgDetails.shortDescription && ( // Only render if shortDescription exists
+                {orgDetails.shortDescription && (
                     <p className={styles.shortDescription}>{orgDetails.shortDescription}</p>
                 )}
             </div>
@@ -97,7 +101,7 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                     <MapPin size={20} className={styles.icon} />
                     <strong>Address:</strong> {orgDetails.address}
                 </div>
-                {orgDetails.website && ( // Only render if website exists
+                {orgDetails.website && (
                     <div className={styles.detailItem}>
                         <Globe size={20} className={styles.icon} />
                         <strong>Website:</strong>{" "}
@@ -106,7 +110,7 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                         </Link>
                     </div>
                 )}
-                {orgDetails.category && ( // Only render if category exists
+                {orgDetails.category && (
                     <div className={styles.detailItem}>
                         <Tag size={20} className={styles.icon} />
                         <strong>Category:</strong> {orgDetails.category}
@@ -118,14 +122,14 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                 </div>
             </div>
 
-            {orgDetails.description && ( // Only render if description exists
+            {orgDetails.description && (
                 <div className={styles.descriptionSection}>
                     <h2>About Us</h2>
                     <p>{orgDetails.description}</p>
                 </div>
             )}
 
-            {orgDetails.tags && orgDetails.tags.length > 0 && ( // Only render if tags exist and are not empty
+            {orgDetails.tags && orgDetails.tags.length > 0 && (
                 <div className={styles.tagsSection}>
                     <h2>Tags</h2>
                     <div className={styles.tagList}>
@@ -137,8 +141,6 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                     </div>
                 </div>
             )}
-
-            {/* You can add more sections here like events, donations, etc. */}
         </div>
     );
 }
