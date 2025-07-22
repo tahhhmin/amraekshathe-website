@@ -12,20 +12,19 @@ interface OrganizationPageParams {
     slug: string;
 }
 
-// Type for the Page component's props
+// Type for the Page component's props - params is now a Promise
 interface OrganizationDetailPageProps {
-    params: OrganizationPageParams;
+    params: Promise<OrganizationPageParams>;
 }
 
-// Type for generateMetadata function's props
-// It takes an object with `params` and optionally `searchParams`
+// Type for generateMetadata function's props - params is also a Promise here
 interface GenerateMetadataProps {
-    params: OrganizationPageParams;
-    // searchParams?: { [key: string]: string | string[] | undefined }; // Uncomment if you need search params
+    params: Promise<OrganizationPageParams>;
+    // searchParams?: Promise<{ [key: string]: string | string[] | undefined }>; // Uncomment if you need search params
 }
 
 export async function generateMetadata({ params }: GenerateMetadataProps) {
-    const slug = params.slug;
+    const { slug } = await params; // Await the params Promise
     await connectDB();
     const org = await Organization.findOne({ slug });
 
@@ -44,7 +43,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps) {
 export const dynamic = 'force-dynamic';
 
 export default async function OrganizationDetailPage({ params }: OrganizationDetailPageProps) {
-    const { slug } = params;
+    const { slug } = await params; // Await the params Promise
 
     if (!slug) {
         notFound();
