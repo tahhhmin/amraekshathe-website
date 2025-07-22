@@ -6,7 +6,6 @@ import React, { useState } from "react";
 import Styles from "./page.module.css";
 import Button from "@/ui/button/Button";
 import Input from "@/ui/input/Input";
-import { Mail, Building2, Globe2, User2, Phone, Calendar, Clock, Info } from "lucide-react";
 
 export default function OrganisationRegistrationPage() {
   const [orgName, setOrgName] = useState("");

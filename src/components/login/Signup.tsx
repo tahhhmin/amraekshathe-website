@@ -42,73 +42,14 @@ export default function SignIn({
   // Location stored as GeoJSON Point with proper typing
   const [location, setLocation] = useState<LocationType | null>(null);
   const [locationError, setLocationError] = useState<string | null>(null);
-  const [locationLoading, setLocationLoading] = useState(false);
 
   // Verification code
   const [code, setCode] = useState("");
 
-  // Determine current "sub-mode" within SignIn based on the 'mode' prop from parent
-  // This is the key fix: it should directly reflect the parent's mode.
-  const isVerifyMode = currentEmail !== "" && setMode.name === "verify"; // Check if currentEmail is available and mode is 'verify'
-  // The line above is a placeholder to demonstrate the concept.
-  // A better way is to pass the 'mode' directly as a prop from AuthPage.
-  // For now, let's use the current approach of checking `setMode`'s internal state which is not ideal.
-
-  // Let's refine this: the `setMode` function itself doesn't carry the current mode state.
-  // The `AuthPage` component already passes `setMode` to this component.
-  // The `AuthPage` also has a `mode` state.
-  // The best way to do this is to pass `mode` as a prop to `SignIn`.
-
-  // For now, let's assume `setMode` is implicitly indicating the mode.
-  // A more robust solution would be to pass `mode` as a prop to `SignIn` directly.
-  // For the purpose of fixing the immediate issue with your existing structure,
-  // we need to know the current 'mode' of AuthPage inside SignIn.
-  // Since you pass `setMode` as a prop, and `setMode` is a function,
-  // we cannot directly infer the current mode from `setMode.name`.
-
-  // Let's modify the `SignInProps` to accept `mode` directly.
-  // This will require a small change in `app/login-signup/page.tsx` as well.
-
-  // --- REVISED APPROACH FOR `isVerifyMode` ---
-  // To correctly determine `isVerifyMode` here, the `mode` state from `AuthPage`
-  // must be passed as a prop to `SignIn`.
-
-  // Let's assume `SignInProps` now includes `mode: "signup" | "verify" | "login";`
-  // And `AuthPage` passes `mode={mode}` to `SignIn`.
-
-  // Then, `isVerifyMode` would simply be:
-  // const isVerifyMode = mode === "verify";
-
-  // Since I cannot modify `AuthPage` in this single response to pass a new prop,
-  // and your `SignIn` component is already expecting `currentEmail` to be set
-  // when it's supposed to be in verify mode, we can simplify the condition.
-  // The core problem was `code !== ""`. We need to remove that.
-
-  // The condition that `AuthPage` uses to render `SignIn` in verify mode is:
-  // `mode === "verify" && userTypeSelected === "volunteer"`
-  // So, if `SignIn` is rendered, and `currentEmail` is populated, it implies we are in verification flow.
-  // Let's simplify `isVerifyMode` to just check if `currentEmail` is present and the `mode` is `verify`.
-  // However, since `mode` is not a direct prop here, we have to infer it.
-
-  // Given your current `AuthPage.tsx` structure, when `setMode("verify")` is called,
-  // `AuthPage` renders `SignIn` again. Inside `SignIn`, `currentEmail` will be populated.
-  // The `code` state is *local* to `SignIn` and starts empty.
-  // The problem is that `isVerifyMode` relies on `code !== ""`, which is false initially.
-
-  // The simplest fix without changing `AuthPage.tsx`'s props for `SignIn` is to
-  // rely on the `mode` state being managed by the parent `AuthPage` and
-  // assume that if `currentEmail` is present, and `setMode` has been called
-  // to transition to "verify", this component should show the verification form.
-
-  // Let's assume that if `currentEmail` is present, it means we are in the
-  // verification flow, as `currentEmail` is specifically set after signup
-  // to facilitate verification.
-
-  // --- REVISED `isVerifyMode` for your current `SignIn` component ---
+  // Determine if we should show the verification form
   // This relies on the fact that `currentEmail` is only populated when a signup
   // has just occurred and verification is expected.
   const shouldShowVerificationForm = currentEmail !== "";
-
 
   // Get user's current location
   function handleGetLocation() {
@@ -480,14 +421,8 @@ export default function SignIn({
             </label>
             <Button
               onClick={handleGetLocation}
-              disabled={locationLoading || loading}
-              label={
-                locationLoading
-                  ? "Getting Location..."
-                  : location
-                  ? "✓ Location Captured"
-                  : "📍 Get Current Location"
-              }
+              disabled={loading}
+              label={location ? "✓ Location Captured" : "📍 Get Current Location"}
               variant={location ? "primary" : "secondary"}
             />
             {locationError && (

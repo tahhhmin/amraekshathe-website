@@ -6,15 +6,7 @@ import { useRouter } from "next/navigation";
 import Button from '@/ui/button/Button'; // Assuming this path is correct
 
 // Define a type for the profile data returned from the API
-interface ProfileResponseData {
-  id: string;
-  email: string;
-  userType: "user" | "organization";
-  username?: string; // For volunteers
-  name?: string; // For volunteers
-  organizationName?: string; // For organizations
-  // Add other relevant profile fields here that you expect to be returned
-}
+
 
 export default function AuthButton() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);

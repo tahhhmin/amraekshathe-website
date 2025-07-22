@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import PublicProfile from '@/components/public/organisationProfile'; // Assuming this path
 import styles from './page.module.css'; // Adjust path if needed
-import { redirect } from 'next/navigation';
 
 // === IMPORTANT FOR FRESH DATA ===
 // This line forces the page to be dynamic, meaning it will re-fetch data on every request.
@@ -15,6 +14,18 @@ export const dynamic = 'force-dynamic';
 
 export interface OrganizationForCard {
     _id: string;
+    name: string;
+    slug: string;
+    shortDescription?: string;
+    imageUrl?: string;
+    location: string;
+    category?: string;
+    tags?: string[];
+}
+
+// Type for the API response structure
+interface ApiOrganizationResponse {
+    id: string;
     name: string;
     slug: string;
     shortDescription?: string;
@@ -47,18 +58,18 @@ async function getOrganizations(): Promise<OrganizationForCard[]> {
             throw new Error(errorData.message || `Failed to fetch organizations: ${res.statusText}`);
         }
 
-        const data = await res.json();
+        const data: ApiOrganizationResponse[] = await res.json();
         console.log("Raw data received by page from API:", data); // Log the raw data
 
         // Map the API response to your OrganizationForCard interface
         // FIXED: Use the already mapped field names from the API response
-        const organizations = data.map((org: any) => ({
-            _id: org._id,
-            name: org.name, // Changed from org.organizationName to org.name (API already mapped this)
+        const organizations: OrganizationForCard[] = data.map((org: ApiOrganizationResponse) => ({
+            _id: org.id, // API returns 'id', but interface expects '_id'
+            name: org.name,
             slug: org.slug,
             shortDescription: org.shortDescription,
             imageUrl: org.imageUrl,
-            location: org.location, // Changed from org.address to org.location (API already mapped this)
+            location: org.location,
             category: org.category,
             tags: org.tags
         }));
@@ -68,7 +79,7 @@ async function getOrganizations(): Promise<OrganizationForCard[]> {
     } catch (error) {
         console.error("Error fetching organizations in Page component:", error);
         // Optionally redirect to an error page or show a fallback UI
-        // redirect('/error'); // Example redirection
+        // redirect('/error'); // Example redirection - removed unused import
         return []; // Return empty array on error to prevent crashing
     }
 }

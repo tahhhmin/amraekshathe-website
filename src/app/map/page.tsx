@@ -39,23 +39,6 @@ interface Project {
 }
 
 // Component to handle the invisible icon, ensuring L is available
-function InvisibleMarkerIcon() {
-  const [L, setL] = useState<typeof import("leaflet") | null>(null);
-
-  useEffect(() => {
-    import("leaflet").then((mod) => {
-      setL(mod);
-    });
-  }, []);
-
-  if (!L) return null; // Don't return the icon until L is loaded
-
-  return new L.DivIcon({
-    html: "",
-    className: "invisible-marker",
-    iconSize: [0, 0],
-  });
-}
 
 
 export default function ShowProjectsOnMap() {
