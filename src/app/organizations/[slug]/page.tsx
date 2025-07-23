@@ -153,8 +153,111 @@ const fallback = "HE";
                                 minus eligendi id esse veritatis, accusantium nam 
                                 ut libero aperiam!</p>
                         </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Key Metrics</h2>
+                            <div className={styles.cardStatGrid}>
+                                <div className={styles.cardStatGridItem}>
+                                    <h1>150+</h1>
+                                    <p className="muted-text">Projects</p>
+                                </div>
+
+                                <div className={styles.cardStatGridItem}>
+                                    <h1>150+</h1>
+                                    <p className="muted-text">Projects</p>
+                                </div>
+
+                                <div className={styles.cardStatGridItem}>
+                                    <h1>150+</h1>
+                                    <p className="muted-text">Projects</p>
+                                </div>
+
+                                <div className={styles.cardStatGridItem}>
+                                    <h1>150+</h1>
+                                    <p className="muted-text">Projects</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Leadership Team</h2>
+                            <div className={styles.cardPersonList}>
+                                <div className={styles.cardPerson}>
+                                    <div className={styles.cardPersonImage}></div>
+                                    <div className={styles.cardPersonInfo}>
+                                        <h2>John Doe</h2>
+                                        <p>CEO</p>
+                                        <p className="muted-text">john.doe@example.com</p>
+                                    </div>
+                                </div>
+
+                                <div className={styles.cardPerson}>
+                                    <div className={styles.cardPersonImage}></div>
+                                    <div className={styles.cardPersonInfo}>
+                                        <h2>John Doe</h2>
+                                        <p>CEO</p>
+                                        <p className="muted-text">john.doe@example.com</p>
+                                    </div>
+                                </div>
+
+                                <div className={styles.cardPerson}>
+                                    <div className={styles.cardPersonImage}></div>
+                                    <div className={styles.cardPersonInfo}>
+                                        <h2>John Doe</h2>
+                                        <p>CEO</p>
+                                        <p className="muted-text">john.doe@example.com</p>
+                                    </div>
+                                </div>
+
+                                <div className={styles.cardPerson}>
+                                    <div className={styles.cardPersonImage}></div>
+                                    <div className={styles.cardPersonInfo}>
+                                        <h2>John Doe</h2>
+                                        <p>CEO</p>
+                                        <p className="muted-text">john.doe@example.com</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Current Projects</h2>
+                            <p className={styles.cardDescription}>Lorem ipsum dolor, sit amet consectetur adipisicing 
+                                elit. Dolores harum rem nulla, sunt porro tenetur 
+                                rerum, molestias placeat dignissimos repudiandae 
+                                minus eligendi id esse veritatis, accusantium nam 
+                                ut libero aperiam!</p>
+                        </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Our Volunteers</h2>
+                            <p className={styles.cardDescription}>Lorem ipsum dolor, sit amet consectetur adipisicing 
+                                elit. Dolores harum rem nulla, sunt porro tenetur 
+                                rerum, molestias placeat dignissimos repudiandae 
+                                minus eligendi id esse veritatis, accusantium nam 
+                                ut libero aperiam!</p>
+                        </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Upcoming Events</h2>
+                            <p className={styles.cardDescription}>Lorem ipsum dolor, sit amet consectetur adipisicing 
+                                elit. Dolores harum rem nulla, sunt porro tenetur 
+                                rerum, molestias placeat dignissimos repudiandae 
+                                minus eligendi id esse veritatis, accusantium nam 
+                                ut libero aperiam!</p>
+                        </div>
                     </div>
                     
+
+
+
+
+
+
+
+
+
+
                     <div className={styles.rightColumn}>
                         <div className={styles.cardContainer}>
                             <h2>Contact Information</h2>
@@ -178,6 +281,118 @@ const fallback = "HE";
                                 </ul>
 
                         </div>
+
+
+
+
+
+                        <div className={styles.cardContainer}>
+                            <h2>Our Impact</h2>
+
+                            <div className={styles.verticalContent}>
+                                <h1>1,200+</h1>
+                                <p className="muted-text">Volunteering Hours</p>
+                            </div>
+
+                            <div className={styles.verticalContent}>
+                                <h1>25</h1>
+                                <p className="muted-text">Active Volunteers</p>
+                            </div>
+
+                            <div className={styles.verticalContent}>
+                                <h1>8</h1>
+                                <p className="muted-text">Ongoing Projects</p>
+                            </div>
+
+                            <div className={styles.verticalContent}>
+                                <h1>78</h1>
+                                <p className="muted-text">Completed Projects</p>
+                            </div>
+
+                            <div className={styles.verticalContent}>
+                                <h1>15,000+</h1>
+                                <p className="muted-text">Lives Impacted</p>
+                            </div>
+
+                             <div className={styles.verticalContent}>
+                                <h1>53</h1>
+                                <p className="muted-text">Locations</p>
+                            </div>
+
+                        </div>
+
+
+
+
+                        <div className={styles.cardContainer}>
+                            <h2>Get Involved</h2>
+                            <div className={styles.cardContainerButtonContainer}>
+                                <Button
+                                    variant="primary"
+                                    label="Become a Volunteer"
+                                    showIcon
+                                    icon="Users"
+                                />
+
+                                <Button
+                                    variant="outlined"
+                                    label="View All Projects"
+                                    showIcon
+                                    icon="ExternalLink"
+                                />
+
+                                <Button
+                                    variant="outlined"
+                                    label="View All Projects"
+                                    showIcon
+                                    icon="ExternalLink"
+                                />
+                            </div>
+                            
+
+                        </div>
+
+                        <div className={styles.cardContainer}>
+                            <h2>Follow Us</h2>
+                            <div className={styles.cardContainerButtonContainerIcon}>
+                                <Button
+                                    variant="icon"
+
+                                    showIcon
+                                    icon="Users"
+                                />
+
+                                <Button
+                                    variant="icon"
+
+                                    showIcon
+                                    icon="ExternalLink"
+                                />
+
+                                <Button
+                                    variant="icon"
+
+                                    showIcon
+                                    icon="ExternalLink"
+                                />
+                            </div>
+                            
+
+                        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     </div>
                 </div>
 
