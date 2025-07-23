@@ -4,8 +4,7 @@ import Organization from "@/models/Organisation";
 import styles from "./organisationDetailPage.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import Link from "next/link";
-import { Mail, Phone, MapPin, Globe, CalendarDays, Tag, Users, HandHeart } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, Users, HandHeart } from 'lucide-react';
 import Button from "@/ui/button/Button";
 
 // Define the shape of the parameters for this dynamic route
@@ -100,7 +99,7 @@ const fallback = "HE";
 
                         <div className={styles.nameContainer}>
                             <h1>{orgDetails.organizationName}</h1>
-                            <h3>Innovating Tomorrow's Technology Today</h3>
+                            <h3>Innovating Tomorrows Technology Today</h3>
                             <div className={styles.meta}>
                             <div className={styles.metaItem}>
                                     <Users className={styles.metaIcon} />

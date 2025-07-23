@@ -15,9 +15,6 @@ interface PublicProfileProps {
 
 const OrganizationCard: React.FC<PublicProfileProps> = ({ organization }) => {
     // Determine the image URL, provide a fallback if empty
-    const displayImageUrl = organization.imageUrl && organization.imageUrl.trim() !== ''
-        ? (organization.imageUrl.startsWith('http') ? organization.imageUrl : `/${organization.imageUrl}`)
-        : '/default-org-logo.png'; // Path to your default placeholder in public folder
 
     return (
         <div className={styles.card}>
