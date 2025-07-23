@@ -84,11 +84,14 @@
 }
 /* Variant: Action */
 .action {
-    background-color: var(--color-green);
-    color: var(--color-white);
-    border-color: var(--color-green);
+    background-color: transparent;
+    color: var(--color-primary);
+    border-color: transparent;
+    gap: 0.5rem;
 }
-
+.action .buttonIcon {
+    color: var(--color-primary);
+}
 .action:hover {
     background-color: var(--color-dark-green);
 }

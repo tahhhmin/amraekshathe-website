@@ -1,7 +1,7 @@
 // src/app/organizations/page.tsx
 
 import Link from 'next/link';
-import PublicProfile from '@/components/public/organisationProfile';
+import OrganizationCard from '@/components/organizations/OrganizationCard';
 import styles from './page.module.css';
 import { connectDB } from '@/config/connectDB';
 import Organization from '@/models/Organisation';
@@ -57,6 +57,7 @@ export default async function OrganizationsPage() {
         <section className={styles.section}>
             <div className={styles.container}>
                 <h1 className={styles.title}>Our Partner Organizations</h1>
+                
                 {organizations.length === 0 ? (
                     <p>No organizations found.</p>
                 ) : (
@@ -64,11 +65,11 @@ export default async function OrganizationsPage() {
                         {organizations.map((org) => (
                             org.slug ? (
                                 <Link href={`/organizations/${org.slug}`} key={org._id} className={styles.cardLink}>
-                                    <PublicProfile organization={org} />
+                                    <OrganizationCard organization={org} />
                                 </Link>
                             ) : (
                                 <div key={org._id} className={styles.cardLinkNoSlug}>
-                                    <PublicProfile organization={org} />
+                                    <OrganizationCard organization={org} />
                                     <p className={styles.noSlugWarning}>Link unavailable (missing slug)</p>
                                 </div>
                             )

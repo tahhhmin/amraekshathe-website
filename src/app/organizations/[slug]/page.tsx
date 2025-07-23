@@ -72,6 +72,7 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
     };
 
     return (
+        <section className={styles.section}>
         <div className={styles.container}>
             <div className={styles.header}>
                 <Image
@@ -141,5 +142,6 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
                 </div>
             )}
         </div>
+        </section>
     );
 }

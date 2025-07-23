@@ -3,6 +3,8 @@ import React from 'react';
 import Image from 'next/image'; // For optimized images
 import Styles from './organisationProfile.module.css';
 import { OrganizationForCard } from '@/app/organizations/page'; // Import the type from the list page
+import Button from '@/ui/button/Button';
+import VerticalDivider from '@/ui/dividers/VerticalDivider';
 
 interface PublicProfileProps {
     organization: OrganizationForCard;
@@ -16,16 +18,22 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ organization }) => {
 
     return (
         <div className={Styles.card}>
+            <div className={Styles.header}>
+                <p className={Styles.tag}>non-profit</p>
+            </div>
+
             <div className={Styles.imageContainer}>
-                <Image
+                <div className={Styles.image}><Image
                     src={displayImageUrl}
                     alt={`${organization.name} logo`}
-                    width={100} // Adjust as needed for your design
-                    height={100} // Adjust as needed for your design
+                    width={100} 
+                    height={100} 
                     className={Styles.image}
-                    priority={false} // Set to true only if this image is above the fold on the LIST page (unlikely for all cards)
-                />
+                    priority={false}
+                /></div>
             </div>
+
+
             <div className={Styles.info}>
                 <h2 className={Styles.name}>{organization.name}</h2>
                 <p className={Styles.shortDescription}>{organization.shortDescription}</p>
@@ -38,6 +46,33 @@ const PublicProfile: React.FC<PublicProfileProps> = ({ organization }) => {
                         ))}
                     </div>
                 )}
+
+            <div className={Styles.infoContainer}>
+                <div>
+                    <p className={Styles.projects}>Projects</p>
+                    <h2>10</h2>
+                </div>
+                
+                <VerticalDivider/>
+
+                <div>
+                    <p className={Styles.projects}>Volunteers</p>
+                    <h2>120</h2>
+                </div>
+            </div>
+
+            <div className={Styles.buttonContainer}>
+
+                <Button
+                    variant="outlined"
+                    label='Join'
+                />
+
+                <div className={Styles.viewButton}><Button
+                    variant="primary"
+                    label='view'
+                /></div>
+            </div>
             </div>
         </div>
     );

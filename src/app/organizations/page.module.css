@@ -15,24 +15,36 @@
     gap: 1rem;
 }
 
-.profileCardsGrid {
+
+@media (max-width: 1440px) {
+    .container {
+        width: 100%;
+    }
+    .section {
+        padding: 1rem;
+    }
+}
+
+.grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 30px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+    margin: 0 auto;
 }
 
-.error, .noOrganizations {
-    text-align: center;
-    color: #ff4d4f;
-    font-size: 1.1rem;
-    padding: 20px;
-    border: 1px solid #ffccc7;
-    background-color: #fff1f0;
-    border-radius: 8px;
-    grid-column: 1 / -1; /* Span across all columns in the grid */
+@media (max-width: 1024px) {
+    .grid {
+        grid-template-columns: repeat(4, 1fr);
+    }
 }
 
-.title {
-    text-align: left;
-    
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.cardLink {
+    text-decoration: none;
 }
