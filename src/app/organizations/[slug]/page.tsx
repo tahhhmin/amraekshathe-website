@@ -5,7 +5,8 @@ import styles from "./organisationDetailPage.module.css";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import { Mail, Phone, MapPin, Globe, CalendarDays, Tag } from 'lucide-react';
+import { Mail, Phone, MapPin, Globe, CalendarDays, Tag, Users, HandHeart } from 'lucide-react';
+import Button from "@/ui/button/Button";
 
 // Define the shape of the parameters for this dynamic route
 interface OrganizationPageParams {
@@ -55,6 +56,9 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
     if (!org) {
         notFound();
     }
+const thumbnailURL = ""; 
+const avatarURL = ""; 
+const fallback = "HE"; 
 
     const orgDetails = {
         organizationName: org.organizationName,
@@ -73,75 +77,115 @@ export default async function OrganizationDetailPage({ params }: OrganizationDet
 
     return (
         <section className={styles.section}>
-        <div className={styles.container}>
-            <div className={styles.header}>
-                <Image
-                    src={orgDetails.imageUrl}
-                    alt={`${orgDetails.organizationName} Logo`}
-                    width={150}
-                    height={150}
-                    className={styles.logo}
-                />
-                <h1>{orgDetails.organizationName}</h1>
-                {orgDetails.shortDescription && (
-                    <p className={styles.shortDescription}>{orgDetails.shortDescription}</p>
-                )}
+            <div className={styles.container}>
+                <div className={styles.header}>
+                    <div className={styles.coverImageArea}>
+                        <Image
+                            src={thumbnailURL}
+                            alt="Cover"
+                            className={styles.coverImage}
+                        />
+                    </div>
+                </div>
+                <div className={styles.avatarContainer}>
+
+                    <div className={styles.avatarWrapper}>
+                        <div className={styles.avatar}> 
+                        {avatarURL ? (
+                                <Image src={avatarURL} alt="Avatar" className={styles.avatarImage} />
+                            ) : (
+                                <div className={styles.avatarFallback}>{fallback}</div>
+                            )}
+                        </div>
+
+                        <div className={styles.nameContainer}>
+                            <h1>{orgDetails.organizationName}</h1>
+                            <h3>Innovating Tomorrow's Technology Today</h3>
+                            <div className={styles.meta}>
+                            <div className={styles.metaItem}>
+                                    <Users className={styles.metaIcon} />
+                                    <p>42 members</p>
+                                </div>
+                                <div className={styles.metaItem}>
+                                    <MapPin className={styles.metaIcon} />
+                                    <p>Location</p>
+                                </div>
+                                <div className={styles.metaItem}>
+                                    <HandHeart className={styles.metaIcon} />
+                                    <p>10 projects</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+                    <div className={styles.headerButtonContainer}>
+                        <Button
+                            variant="outlined"
+                            label="Join Organization"
+                            showIcon
+                            icon="ExternalLink"
+                        />
+                        <Button
+                            variant="primary"                        
+                            label="Contact"
+                            showIcon
+                            icon="Mail"
+                        />
+                    </div>
+
+
+
+
+
+
+                </div>
+
+
+                <div className={styles.contentContainer}>
+
+                    <div className={styles.leftColumn}>
+                        <div className={styles.cardContainer}>
+                            <h2>About</h2>
+                            <p className={styles.cardDescription}>Lorem ipsum dolor, sit amet consectetur adipisicing 
+                                elit. Dolores harum rem nulla, sunt porro tenetur 
+                                rerum, molestias placeat dignissimos repudiandae 
+                                minus eligendi id esse veritatis, accusantium nam 
+                                ut libero aperiam!</p>
+                        </div>
+                    </div>
+                    
+                    <div className={styles.rightColumn}>
+                        <div className={styles.cardContainer}>
+                            <h2>Contact Information</h2>
+
+                                <ul className={styles.cardList}>
+                                    <li>
+                                        <Globe className={styles.contactIcons} /> <a href="https://techforward.com">techforward.com</a>
+                                    </li>
+
+                                    <li>
+                                        <Mail className={styles.contactIcons} /> <a href="https://techforward.com">techforward.com</a>
+                                    </li>
+
+                                    <li>
+                                        <Phone className={styles.contactIcons} /> <a href="https://techforward.com">techforward.com</a>
+                                    </li>
+
+                                    <li>
+                                        <MapPin className={styles.contactIcons} /> <a href="https://techforward.com">techforward.com</a>
+                                    </li>
+                                </ul>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+
             </div>
-
-            <div className={styles.detailsGrid}>
-                <div className={styles.detailItem}>
-                    <Mail size={20} className={styles.icon} />
-                    <strong>Email:</strong> {orgDetails.email}
-                </div>
-                <div className={styles.detailItem}>
-                    <Phone size={20} className={styles.icon} />
-                    <strong>Phone:</strong> {orgDetails.phoneNumber}
-                </div>
-                <div className={styles.detailItem}>
-                    <MapPin size={20} className={styles.icon} />
-                    <strong>Address:</strong> {orgDetails.address}
-                </div>
-                {orgDetails.website && (
-                    <div className={styles.detailItem}>
-                        <Globe size={20} className={styles.icon} />
-                        <strong>Website:</strong>{" "}
-                        <Link href={orgDetails.website} target="_blank" rel="noopener noreferrer">
-                            {orgDetails.website}
-                        </Link>
-                    </div>
-                )}
-                {orgDetails.category && (
-                    <div className={styles.detailItem}>
-                        <Tag size={20} className={styles.icon} />
-                        <strong>Category:</strong> {orgDetails.category}
-                    </div>
-                )}
-                <div className={styles.detailItem}>
-                    <CalendarDays size={20} className={styles.icon} />
-                    <strong>Joined:</strong> {orgDetails.dateJoined}
-                </div>
-            </div>
-
-            {orgDetails.description && (
-                <div className={styles.descriptionSection}>
-                    <h2>About Us</h2>
-                    <p>{orgDetails.description}</p>
-                </div>
-            )}
-
-            {orgDetails.tags && orgDetails.tags.length > 0 && (
-                <div className={styles.tagsSection}>
-                    <h2>Tags</h2>
-                    <div className={styles.tagList}>
-                        {orgDetails.tags.map((tag, index) => (
-                            <span key={index} className={styles.tag}>
-                                {tag}
-                            </span>
-                        ))}
-                    </div>
-                </div>
-            )}
-        </div>
         </section>
     );
 }
